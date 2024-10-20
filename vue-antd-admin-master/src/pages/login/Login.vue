@@ -146,7 +146,7 @@ export default {
       this.form.validateFields((err) => {
         if (!err) {
           this.logging = true
-          const name = this.form.getFieldValue('name')
+          const name = this.form.getFieldValue('name');
           const password = this.form.getFieldValue('password');
 
           // 获取所选角色
@@ -157,7 +157,7 @@ export default {
     },
     afterLogin(res) {
       this.logging = false
-      const loginRes = res.data
+      const loginRes = res
       if (loginRes.code >= 0) {
         const {user, permissions, roles} = loginRes.data
         this.setUser(user)
