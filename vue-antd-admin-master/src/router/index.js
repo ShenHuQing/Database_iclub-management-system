@@ -29,3 +29,13 @@ function initRouter(isAsync) {
   return new Router(options)
 }
 export {loginIgnore, initRouter}
+
+// export default new Router({
+//   routes: [
+//     {
+//       path: '/register',
+//       name: 'Register',
+//       component: Register
+//     }
+//   ]
+// });

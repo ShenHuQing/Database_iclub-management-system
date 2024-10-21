@@ -33,7 +33,7 @@ Mock.mock(`${process.env.VUE_APP_API_BASE_URL}/login`, 'post', ({body}) => {
     result.data.expireAt = new Date(new Date().getTime() + 30 * 60 * 1000)
   } else {
     result.code = -1
-    result.message = '账户名或密码错误（admin/888888 or test/888888）'
+    result.message = '账户名或密码错误'
   }
   return result
 })

@@ -8,8 +8,10 @@
     </div>
     <div class="login">
       <a-form @submit="onSubmit" :form="form">
-        <a-tabs size="large" :tabBarStyle="{textAlign: 'center'}" style="padding: 0 2px;">
-          <a-tab-pane tab="登录" key="1">
+        <!-- 使用 v-model 来绑定当前的 tab 状态 -->
+        <a-tabs v-model="activeTab" size="large" :tabBarStyle="{textAlign: 'center'}" style="padding: 0 2px;">
+          <!-- 登录 Tab -->
+          <a-tab-pane tab="登录" key="login">
             <a-alert type="error" :closable="true" v-show="error" :message="error" showIcon style="margin-bottom: 24px;" />
             <a-form-item>
               <a-input
@@ -33,23 +35,15 @@
               </a-input>
             </a-form-item>
             <a-radio-group v-model="userRole">
-              <a-radio value="admin">管理员</a-radio>
               <a-radio value="student">学生</a-radio>
+              <a-radio value="admin">管理员</a-radio>
             </a-radio-group>
-            <!--              <a-select-->
-            <!--                  size="large"-->
-            <!--                  placeholder="请选择角色"-->
-            <!--                  v-decorator="['userRole', {rules: [{ required: true, message: '请选择角色'}]}]"-->
-            <!--                  allowClear-->
-            <!--              >-->
-            <!--                <a-select-option value="admin">管理员</a-select-option>-->
-            <!--                <a-select-option value="student">学生</a-select-option>-->
-            <!--              </a-select>-->
             <a-form-item>
               <a-button :loading="logging" style="width: 100%;margin-top: 24px" size="large" htmlType="submit" type="primary">登录</a-button>
             </a-form-item>
           </a-tab-pane>
-          <a-tab-pane tab="注册" key="2">
+          <!-- 注册 Tab -->
+          <a-tab-pane tab="注册" key="register">
             <a-alert type="error" :closable="true" v-show="error" :message="error" showIcon style="margin-bottom: 24px;" />
             <a-form-item>
               <a-input
@@ -76,40 +70,7 @@
               <a-button :loading="logging" style="width: 100%;margin-top: 24px" size="large" htmlType="submit" type="primary">注册</a-button>
             </a-form-item>
           </a-tab-pane>
-          <!--          <a-tab-pane tab="手机号登录" key="2">-->
-          <!--            <a-form-item>-->
-          <!--              <a-input size="large" placeholder="mobile number" >-->
-          <!--                <a-icon slot="prefix" type="mobile" />-->
-          <!--              </a-input>-->
-          <!--            </a-form-item>-->
-          <!--            <a-form-item>-->
-          <!--              <a-row :gutter="8" style="margin: 0 -4px">-->
-          <!--                <a-col :span="16">-->
-          <!--                  <a-input size="large" placeholder="captcha">-->
-          <!--                    <a-icon slot="prefix" type="mail" />-->
-          <!--                  </a-input>-->
-          <!--                </a-col>-->
-          <!--                <a-col :span="8" style="padding-left: 4px">-->
-          <!--                  <a-button style="width: 100%" class="captcha-button" size="large">获取验证码</a-button>-->
-          <!--                </a-col>-->
-          <!--              </a-row>-->
-          <!--            </a-form-item>-->
-          <!--          </a-tab-pane>-->
         </a-tabs>
-        <!--        <div>-->
-        <!--          <a-checkbox :checked="true" >自动登录</a-checkbox>-->
-        <!--          <a style="float: right">忘记密码</a>-->
-        <!--        </div>-->
-        <!--        <a-form-item>
-                  <a-button :loading="logging" style="width: 100%;margin-top: 24px" size="large" htmlType="submit" type="primary">登录</a-button>
-                </a-form-item>-->
-        <!--        <div>-->
-        <!--          其他登录方式-->
-        <!--          <a-icon class="icon" type="alipay-circle" />-->
-        <!--          <a-icon class="icon" type="taobao-circle" />-->
-        <!--          <a-icon class="icon" type="weibo-circle" />-->
-        <!--          <router-link style="float: right" to="/dashboard/workplace" >注册账户</router-link>-->
-        <!--        </div>-->
       </a-form>
     </div>
   </common-layout>
@@ -117,67 +78,78 @@
 
 <script>
 import CommonLayout from '@/layouts/CommonLayout'
-import {login, getRoutesConfig} from '@/services/user'
-import {setAuthorization} from '@/utils/request'
-import {loadRoutes} from '@/utils/routerUtil'
-import {mapMutations} from 'vuex'
+import { login } from '@/services/user'
+import { setAuthorization } from '@/utils/request'
+import { mapMutations } from 'vuex'
+import axios from "axios";
 
 export default {
   name: 'Login',
-  components: {CommonLayout},
-  data () {
+  components: { CommonLayout },
+  data() {
     return {
       logging: false,
       error: '',
       form: this.$form.createForm(this),
-      // 默认角色
-      userRole: 'admin'
+      userRole: 'student',
+      activeTab: 'login'  // 默认选中的 Tab
     }
   },
   computed: {
-    systemName () {
+    systemName() {
       return this.$store.state.setting.systemName
     }
   },
   methods: {
     ...mapMutations('account', ['setUser', 'setPermissions', 'setRoles']),
-    onSubmit (e) {
-      e.preventDefault()
+    onSubmit(e) {
+      e.preventDefault();
       this.form.validateFields((err) => {
         if (!err) {
-          this.logging = true
+          this.logging = true;
           const name = this.form.getFieldValue('name');
           const password = this.form.getFieldValue('password');
-
-          // 获取所选角色
           const role = this.userRole;
-          login(name, password, role).then(this.afterLogin);
+
+          // 根据 activeTab 判断当前是登录还是注册
+          if (this.activeTab === 'login') {
+            login(name, password, role).then(this.afterLogin);
+          } else if (this.activeTab === 'register') {
+            axios.post('http://localhost:8080/post', {name, password})
+                .then(response => {
+                  console.log('注册成功:', response.data);
+                  this.$message.success('注册成功！请登录。', 3);
+                  // this.activeTab = 'login'; // 注册成功后切换到登录 Tab
+                })
+                .catch(error => {
+                  console.error('注册失败:', error);
+                  this.error = '注册失败，请重试。';
+                });
+          }
         }
-      })
+      });
     },
     afterLogin(res) {
-      this.logging = false
-      const loginRes = res
+      this.logging = false;
+      const loginRes = res.data;
       if (loginRes.code >= 0) {
-        const {user, permissions, roles} = loginRes.data
-        this.setUser(user)
-        this.setPermissions(permissions)
-        this.setRoles(roles)
-        setAuthorization({token: loginRes.data.token, expireAt: new Date(loginRes.data.expireAt)})
-        // 获取路由配置
-        getRoutesConfig().then(result => {
-          const routesConfig = result.data.data
-          loadRoutes(routesConfig)
-          this.$router.push('/dashboard/workplace')
-          this.$message.success(loginRes.message, 3)
-        })
+        const { user, permissions, roles } = loginRes.data;
+        this.setUser(user);
+        this.setPermissions(permissions);
+        this.setRoles(roles);
+        setAuthorization({ token: loginRes.data.token, expireAt: new Date(loginRes.data.expireAt) });
+        this.$router.push({ path: '/dashboard/workplace' });
+        this.$message.success(loginRes.message, 3);
       } else {
-        this.error = loginRes.message
+        this.error = loginRes.message;
       }
     }
   }
 }
 </script>
+
+
+
 
 <style lang="less" scoped>
 .common-layout{
