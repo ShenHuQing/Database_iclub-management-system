@@ -111,23 +111,36 @@ export default {
           const password = this.form.getFieldValue('password');
           const role = this.userRole;
 
-          // 根据 activeTab 判断当前是登录还是注册
+          // 根据 activeTab 判断是登录还是注册
           if (this.activeTab === 'login') {
             login(name, password, role).then(this.afterLogin);
           } else if (this.activeTab === 'register') {
-            axios.post('http://localhost:8080/post', {name, password})
-                .then(response => {
-                  console.log('注册成功:', response.data);
-                  this.$message.success('注册成功！请登录。', 3);
-                  // this.activeTab = 'login'; // 注册成功后切换到登录 Tab
-                })
-                .catch(error => {
-                  console.error('注册失败:', error);
-                  this.error = '注册失败，请重试。';
-                });
+            this.register(name, password);
           }
         }
       });
+    },
+    register(name, password) {
+      // 注册逻辑
+      axios.post('http://localhost:8080/register', { name, password })
+          .then(response => {
+            const res = response.data;
+            if (res.code === 0) {  // 假设返回 code 为 0 代表成功
+              this.$message.success('注册成功！请登录。', 3);
+              // 注册成功后切换到登录 Tab
+              this.activeTab = 'login';
+              this.form.resetFields();  // 重置表单
+            } else {
+              this.error = res.message || '注册失败，请重试。';
+            }
+          })
+          .catch(error => {
+            console.error('注册失败:', error);
+            this.error = '注册失败，服务器出错，请稍后再试。';
+          })
+          .finally(() => {
+            this.logging = false;  // 无论成功与否都重置 loading 状态
+          });
     },
     afterLogin(res) {
       this.logging = false;
@@ -141,7 +154,7 @@ export default {
         this.$router.push({ path: '/dashboard/workplace' });
         this.$message.success(loginRes.message, 3);
       } else {
-        this.error = loginRes.message;
+        this.error = "登录失败，账号或密码错误";
       }
     }
   }
