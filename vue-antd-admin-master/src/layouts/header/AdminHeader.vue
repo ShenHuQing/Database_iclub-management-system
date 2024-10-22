@@ -23,7 +23,7 @@
             <div>
               <a-icon type="global"/> {{langAlias}}
             </div>
-            <a-menu @click="val => setLang(val.key)" :selected-keys="[lang]" slot="overlay">
+            <a-menu v-if="langList.length" @click="val => setLang(val.key)" :selected-keys="[lang]" slot="overlay">
               <a-menu-item v-for=" lang in langList" :key="lang.key">{{lang.key.toLowerCase() + ' ' + lang.name}}</a-menu-item>
             </a-menu>
           </a-dropdown>

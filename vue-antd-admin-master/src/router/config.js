@@ -11,6 +11,11 @@ const options = {
       component: () => import('@/pages/login')
     },
     {
+      path: '/profile',
+      name: '个人信息',
+      component: () => import('@/pages/myPersonInformation')
+    },
+    {
       path: '*',
       name: '404',
       component: () => import('@/pages/exception/404'),
@@ -239,44 +244,44 @@ const options = {
           },
           component: () => import('@/pages/form/basic')
         },
-        {
-          name: '带参菜单',
-          path: 'router/query',
-          meta: {
-            icon: 'project',
-            query: {
-              name: '菜单默认参数'
-            }
-          },
-          component: () => import('@/pages/Demo')
-        },
-        {
-          name: '动态路由菜单',
-          path: 'router/dynamic/:id',
-          meta: {
-            icon: 'project',
-            params: {
-              id: 123
-            }
-          },
-          component: () => import('@/pages/Demo')
-        },
-        {
-          name: 'Ant Design Vue',
-          path: 'antdv',
-          meta: {
-            icon: 'ant-design',
-            link: 'https://www.antdv.com/docs/vue/introduce-cn/'
-          }
-        },
-        {
-          name: '使用文档',
-          path: 'document',
-          meta: {
-            icon: 'file-word',
-            link: 'https://iczer.gitee.io/vue-antd-admin-docs/'
-          }
-        }
+        // {
+        //   name: '带参菜单',
+        //   path: 'router/query',
+        //   meta: {
+        //     icon: 'project',
+        //     query: {
+        //       name: '菜单默认参数'
+        //     }
+        //   },
+        //   component: () => import('@/pages/Demo')
+        // },
+        // {
+        //   name: '动态路由菜单',
+        //   path: 'router/dynamic/:id',
+        //   meta: {
+        //     icon: 'project',
+        //     params: {
+        //       id: 123
+        //     }
+        //   },
+        //   component: () => import('@/pages/Demo')
+        // },
+        // {
+        //   name: 'Ant Design Vue',
+        //   path: 'antdv',
+        //   meta: {
+        //     icon: 'ant-design',
+        //     link: 'https://www.antdv.com/docs/vue/introduce-cn/'
+        //   }
+        // },
+        // {
+        //   name: '使用文档',
+        //   path: 'document',
+        //   meta: {
+        //     icon: 'file-word',
+        //     link: 'https://iczer.gitee.io/vue-antd-admin-docs/'
+        //   }
+        // }
       ]
     },
   ]

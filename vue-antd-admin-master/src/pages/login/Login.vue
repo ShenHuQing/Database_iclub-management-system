@@ -81,7 +81,9 @@ import CommonLayout from '@/layouts/CommonLayout'
 import { login } from '@/services/user'
 import { setAuthorization } from '@/utils/request'
 import { mapMutations } from 'vuex'
+// import { getRoutesConfig } from "@/services/user";
 import axios from "axios";
+// import {loadRoutes} from "@/utils/routerUtil";
 
 export default {
   name: 'Login',

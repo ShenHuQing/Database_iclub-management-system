@@ -27,13 +27,13 @@ Mock.mock(`${process.env.VUE_APP_API_BASE_URL}/routes`, 'get', () => {
         icon: 'ant-design',
         link: 'https://www.antdv.com/docs/vue/introduce-cn/'
       },
-      {
-        router: 'document',
-        path: 'document',
-        name: '使用文档',
-        icon: 'file-word',
-        link: 'https://iczer.gitee.io/vue-antd-admin-docs/'
-      }
+      // {
+      //   router: 'document',
+      //   path: 'document',
+      //   name: '使用文档',
+      //   icon: 'file-word',
+      //   link: 'https://iczer.gitee.io/vue-antd-admin-docs/'
+      // }
     ]
   }]
   return result

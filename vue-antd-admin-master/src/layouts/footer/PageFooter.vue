@@ -14,7 +14,7 @@
 <script>
 export default {
   name: 'PageFooter',
-  props: ['copyright', 'linkList']
+  props: ['linkList']
 }
 </script>
 
