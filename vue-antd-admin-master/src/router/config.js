@@ -16,6 +16,11 @@ const options = {
       component: () => import('@/pages/myPersonInformation')
     },
     {
+      path: '/club1example',
+      name: '社团1信息',
+      component: () => import('@/pages/club1example')
+    },
+    {
       path: '*',
       name: '404',
       component: () => import('@/pages/exception/404'),
@@ -55,6 +60,17 @@ const options = {
               component: () => import('@/pages/dashboard/analysis'),
             }
           ]
+        },
+        {
+          path: 'club',
+          name: '社团页',
+          meta: {
+            icon: 'club',
+            page: {
+              cacheAble: false
+            }
+          },
+          component: () => import('@/pages/club'),
         },
         {
           path: 'form',
