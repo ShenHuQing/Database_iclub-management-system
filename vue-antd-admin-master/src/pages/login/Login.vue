@@ -133,7 +133,7 @@ export default {
               this.activeTab = 'login';
               this.form.resetFields();  // 重置表单
             } else {
-              this.error = res.message || '注册失败，请重试。';
+              this.error = '注册失败，该用户已存在。';
             }
           })
           .catch(error => {
