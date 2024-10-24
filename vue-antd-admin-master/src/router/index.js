@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 //import Profile from '@/pages/profile/Profile.vue'
-// import myPersonInformation from '@/pages/myPersonInformation/myPersonInformation.vue'
+// import myPersonInformation from '@/pages/myPersonInformation/profile.vue'
 import {formatRoutes} from '@/utils/routerUtil'
 
 Vue.use(Router)

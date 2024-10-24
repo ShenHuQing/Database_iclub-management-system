@@ -32,15 +32,18 @@ export default {
   props: {
     title: {
       type: String,
-      required: true
+      required: false,
+      default: "社团"
     },
     author: {
       type: String,
-      required: true
+      required: false,
+      default: "沈胡青"
     },
     date: {
       type: String,
-      required: true
+      required: false,
+      default: "2024/10/24"
     },
     coverImage: {
       type: String,

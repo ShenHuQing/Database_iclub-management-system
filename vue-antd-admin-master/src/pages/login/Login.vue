@@ -112,7 +112,6 @@ export default {
           const name = this.form.getFieldValue('name');
           const password = this.form.getFieldValue('password');
           const role = this.userRole;
-
           // 根据 activeTab 判断是登录还是注册
           if (this.activeTab === 'login') {
             login(name, password, role).then(this.afterLogin);

@@ -2,18 +2,18 @@
   <div class="student-info">
     <div v-if="isAdmin">
       <h2>管理员信息</h2>
-      <img :src="admin.Aavatar" alt="头像" style="width: 100px; height: 100px; border-radius: 50%;" />
-      <p>姓名: {{ admin.Aname }}</p>
-      <p>邮箱: {{ admin.Aemail }}</p>
+      <img :src="admin.pictureId" alt="头像" style="width: 100px; height: 100px; border-radius: 50%;" />
+      <p>姓名: {{ admin.name }}</p>
+      <p>邮箱: {{ admin.email}}</p>
       <button @click="toggleEditMode">{{ editing ? '关闭' : '修改' }}</button>
       <div v-if="editing">
-        <label for="aname">姓名:</label>
-        <input v-model="admin.Aname" id="aname" />
+        <label for="name">姓名:</label>
+        <input v-model="admin.name" id="name" />
         <br>
-        <label for="aemail">邮箱:</label>
-        <input v-model="admin.Aemail" id="aemail" type="email" />
+        <label for="email">邮箱:</label>
+        <input v-model="admin.email" id="email" type="email" />
         <br>
-        <label for="aavatar">头像:</label>
+        <label for="pictureID">头像:</label>
         <input type="file" @change="onFileChange" id="aavatar" />
         <br>
         <button @click="saveChanges">保存更改</button>
@@ -22,30 +22,40 @@
 
     <div v-else>
       <h2>学生信息</h2>
-      <img :src="student.Savatar" alt="头像" style="width: 100px; height: 100px; border-radius: 50%;" />
-      <p>姓名: {{ student.Sname }}</p>
-      <p>学号: {{ student.Sid }}</p>
-      <p>年级: {{ student.Sgrade }}</p>
-      <p>专业: {{ student.Smajor }}</p>
-      <p>邮箱: {{ student.Semail }}</p>
-      <p>兴趣爱好: {{ student.Shobby }}</p>
-      <p>个性签名: {{ student.Ssignature }}</p>
+      <img :src="student.pictureId" alt="头像" style="width: 100px; height: 100px; border-radius: 50%;" />
+      <p>姓名: {{ student.name }}</p>
+      <p>学号: {{ student.id}}</p>
+      <p>性别: {{ student.gender}}</p>
+      <p>年级: {{ student.grade }}</p>
+      <p>专业: {{ student.major }}</p>
+      <p>邮箱: {{ student.email }}</p>
+      <p>兴趣爱好: {{ student.hobby }}</p>
+      <p>个性签名: {{ student.signature}}</p>
       <button @click="toggleEditMode">{{ editing ? '关闭' : '修改' }}</button>
       <div v-if="editing">
-        <label for="sname">姓名:</label>
-        <input v-model="student.Sname" id="sname" />
+        <label for="name">姓名:</label>
+        <input v-model="student.name" id="name" />
         <br>
-        <label for="sgrade">年级:</label>
-        <input v-model.number="student.Sgrade" id="sgrade" type="number" />
+        <label for="name">性别:</label>
+        <input v-model="student.gender" id="gender" />
         <br>
-        <label for="smajor">专业:</label>
-        <input v-model="student.Smajor" id="smajor" />
+        <label for="grade">年级:</label>
+        <input v-model.number="student.grade" id="grade" type="number" />
         <br>
-        <label for="semail">邮箱:</label>
-        <input v-model="student.Semail" id="semail" type="email" />
+        <label for="major">专业:</label>
+        <input v-model="student.major" id="major" />
         <br>
-        <label for="savatar">头像:</label>
-        <input type="file" @change="onFileChange" id="savatar" />
+        <label for="email">邮箱:</label>
+        <input v-model="student.email" id="email" type="email" />
+        <br>
+        <label for="email">兴趣爱好:</label>
+        <input v-model="student.hobby" id="hobby"/>
+        <br>
+        <label for="email">个性签名:</label>
+        <input v-model="student.signature" id="signature"/>
+        <br>
+        <label for="pictureID">头像:</label>
+        <input type="file" @change="onFileChange" id="pictureID" />
         <br>
         <button @click="saveChanges">保存更改</button>
       </div>
@@ -67,26 +77,32 @@ export default {
     return {
       isAdmin: false,
       admin: {
-        AdminId: '',
-        Aname: '',
-        Aemail: '',
-        ApictureId: '',
+        id: '',
+        password:'',
+        name: '',
+        email:'',
+        pictureId: ''
       },
       student: {
-        Sid: '',
-        Sname: '',
-        Sgrade: null,
-        Smajor: '',
-        Semail: '',
-        Shobby: '',
-        Ssignature: '',
-        SpictureId: '',
+        id: '',
+        password:'',
+        name: '',
+        email:'',
+        gender:'',
+        major: '',
+        grade: '',
+        score:'',
+        hobby: '',
+        signature: '',
+        isStaff:'',
+        pictureId: '',
       },
       editing: false,
+      loading: false,
     };
   },
   computed: {
-    ...mapGetters('account', ['user']),
+    ...mapGetters('account', ['user','roles']),
   },
   mounted() {
     this.fetchUserInfo();
@@ -96,11 +112,11 @@ export default {
       this.editing = !this.editing;
     },
     fetchUserInfo() {
-      const role = this.user.role;
-
+      this.loading = true;
+      const role = this.roles;
       if (role === 'admin') {
-        instance.get('/iClub/get_admin_info/', {
-          params: { id: this.user.id },
+        instance.post('/iClub/get_admin_info', {
+          params: { id: this.user },
         })
             .then(response => {
               this.isAdmin = true;
@@ -110,8 +126,9 @@ export default {
               console.error('获取管理员信息时出错:', error.response.data.error);
             });
       } else if (role === 'student') {
-        instance.get('/iClub/get_student_info/', {
-          params: { id: this.user.id },
+        const id = this.user;
+        instance.post('/iClub/get_student_info', {
+          id
         })
             .then(response => {
               this.isAdmin = false;
@@ -130,9 +147,9 @@ export default {
         const reader = new FileReader();
         reader.onload = e => {
           if (this.isAdmin) {
-            this.admin.Aavatar = e.target.result;
+            this.admin.pictureId = e.target.result;
           } else {
-            this.student.Savatar = e.target.result;
+            this.student.pictureId = e.target.result;
           }
         };
         reader.readAsDataURL(file);
@@ -141,8 +158,8 @@ export default {
     saveChanges() {
       const payload = this.isAdmin ? this.admin : this.student;
       const url = this.isAdmin
-          ? '/iClub/update_admin_info/'
-          : '/iClub/update_student_info/';
+          ? '/iClub/update_admin_info'
+          : '/iClub/update_student_info';
 
       instance.post(url, payload)
           .then(response => {

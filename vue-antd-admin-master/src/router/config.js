@@ -13,7 +13,7 @@ const options = {
     {
       path: '/profile',
       name: '个人信息',
-      component: () => import('@/pages/myPersonInformation')
+      component: () => import('../pages/profile')
     },
     {
       path: '/club1example',

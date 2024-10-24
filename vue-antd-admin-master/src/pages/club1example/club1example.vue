@@ -17,7 +17,7 @@
 
     <!-- 帖子列表 -->
     <div class="posts-container">
-      <Post v-for="(post, index) in community.posts" :key="index" :post="post" :author="shenhuqing" :title="unknown" :date="2024/10/24"/>
+      <Post v-for="(post, index) in community.posts" :key="index" :post="post"/>
     </div>
 
     <!-- 添加新帖子的表单 -->
@@ -75,7 +75,7 @@ export default {
           { Ptitle: "Vue 3.0 发布", Plabel: "技术", Pcontent: "Vue 3 的新特性介绍" },
           { Ptitle: "Composition API", Plabel: "讨论", Pcontent: "讨论 Composition API 的优缺点" }
         ],
-        showAddPost: false // 控制是否显示“发表新帖”表单
+        showAddPost: true // 控制是否显示“发表新帖”表单
       },
       newPost: {
         Ptitle: '', // 新帖标题
