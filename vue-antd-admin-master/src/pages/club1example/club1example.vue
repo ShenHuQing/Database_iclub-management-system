@@ -17,7 +17,7 @@
 
     <!-- 帖子列表 -->
     <div class="posts-container">
-      <Post v-for="(post, index, ) in community.posts" :key="index" :post="post" :author="shenhuqing" :title="unknown" :date="2024/10/24"/>
+      <Post v-for="(post, index) in community.posts" :key="index" :post="post" :author="shenhuqing" :title="unknown" :date="2024/10/24"/>
     </div>
 
     <!-- 添加新帖子的表单 -->

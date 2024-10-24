@@ -53,8 +53,6 @@
   </div>
 </template>
 
-
-
 <script>
 import axios from 'axios';
 import { mapGetters } from 'vuex';
@@ -72,7 +70,7 @@ export default {
         AdminId: '',
         Aname: '',
         Aemail: '',
-        Aavatar: '',
+        ApictureId: '',
       },
       student: {
         Sid: '',
@@ -82,7 +80,7 @@ export default {
         Semail: '',
         Shobby: '',
         Ssignature: '',
-        Savatar: '',
+        SpictureId: '',
       },
       editing: false,
     };
@@ -98,32 +96,32 @@ export default {
       this.editing = !this.editing;
     },
     fetchUserInfo() {
-      const userId = this.user.id;
+      const role = this.user.role;
 
-      if (userId.length === 5) {
-        instance.get('/StudyApp/get_admin_info/', {
-          params: { adminId: userId },
+      if (role === 'admin') {
+        instance.get('/iClub/get_admin_info/', {
+          params: { id: this.user.id },
         })
             .then(response => {
               this.isAdmin = true;
-              this.admin = response.data.admin_info;
+              this.admin = response.data.data;
             })
             .catch(error => {
               console.error('获取管理员信息时出错:', error.response.data.error);
             });
-      } else if (userId.length === 8) {
-        instance.get('/StudyApp/get_student_info/', {
-          params: { studentNumber: userId },
+      } else if (role === 'student') {
+        instance.get('/iClub/get_student_info/', {
+          params: { id: this.user.id },
         })
             .then(response => {
               this.isAdmin = false;
-              this.student = response.data.student_info;
+              this.student = response.data.data;
             })
             .catch(error => {
               console.error('获取学生信息时出错:', error.response.data.error);
             });
       } else {
-        console.error('用户ID不合法');
+        console.error('未知角色:', role);
       }
     },
     onFileChange(event) {
@@ -143,8 +141,8 @@ export default {
     saveChanges() {
       const payload = this.isAdmin ? this.admin : this.student;
       const url = this.isAdmin
-          ? '/StudyApp/update_admin_info/'
-          : '/StudyApp/update_student_info/';
+          ? '/iClub/update_admin_info/'
+          : '/iClub/update_student_info/';
 
       instance.post(url, payload)
           .then(response => {
@@ -265,5 +263,4 @@ button:hover {
     font-size: 1em;
   }
 }
-
 </style>
