@@ -115,9 +115,8 @@ export default {
       this.loading = true;
       const role = this.roles;
       if (role === 'admin') {
-        instance.post('/iClub/get_admin_info', {
-          params: { id: this.user },
-        })
+        const id = this.user;
+        instance.post('/iClub/get_admin_info', {id})
             .then(response => {
               this.isAdmin = true;
               this.admin = response.data.data;
@@ -127,9 +126,7 @@ export default {
             });
       } else if (role === 'student') {
         const id = this.user;
-        instance.post('/iClub/get_student_info', {
-          id
-        })
+        instance.post('/iClub/get_student_info', {id})
             .then(response => {
               this.isAdmin = false;
               this.student = response.data.data;
