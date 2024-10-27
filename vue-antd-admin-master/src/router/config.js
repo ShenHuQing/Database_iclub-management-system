@@ -15,11 +15,11 @@ const options = {
       name: '个人信息',
       component: () => import('../pages/profile')
     },
-    {
-      path: '/club1example',
-      name: '社团1信息',
-      component: () => import('@/pages/club1example')
-    },
+    // {
+    //   path: '/club1example',
+    //   name: '社团1信息',
+    //   component: () => import('@/components/club1example')
+    // },
     {
       path: '*',
       name: '404',
@@ -70,7 +70,7 @@ const options = {
               cacheAble: false
             }
           },
-          component: () => import('@/pages/club'),
+          component: () => import('@/pages/clubs'),
         },
         {
           path: 'form',
