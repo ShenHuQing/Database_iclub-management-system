@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import PageFooter from '@/layouts/footer/PageFooter'
+import PageFooter from '../layouts/footer/PageFooter'
 import {mapState} from 'vuex'
 
 export default {
