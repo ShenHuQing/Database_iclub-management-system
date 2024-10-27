@@ -58,6 +58,7 @@ export default {
   mutations: {
     setUser (state, user) {
       state.user = user
+      //console.log(user)
       localStorage.setItem(process.env.VUE_APP_USER_KEY, JSON.stringify(user))
     },
     setPermissions(state, permissions) {
