@@ -1,2 +1,2 @@
-import Club from './Club.vue'
-export default Club
+import Clubs from './Clubs.vue'
+export default Clubs

@@ -61,6 +61,12 @@ export default {
       tagList.forEach((item) => {
         item.checked = this.checkAll
       })
+      console.log(1);
+      this.emitChange()
+    },
+    emitChange() {
+      const selectedTags = this.getAllTags().filter(tag => tag.checked)
+      this.$emit('change', selectedTags.map(tag => tag.value))
     }
   }
 }

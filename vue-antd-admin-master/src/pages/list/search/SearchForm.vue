@@ -9,7 +9,6 @@
             <tag-select-option>实践类</tag-select-option>
             <tag-select-option>体育类</tag-select-option>
             <tag-select-option>艺术类</tag-select-option>
-            <tag-select-option>其他</tag-select-option>
           </tag-select>
         </a-form-item>
       </form-row>

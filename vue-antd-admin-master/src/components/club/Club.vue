@@ -1,27 +1,23 @@
 <template>
-  <div class="community-container">
-    <!-- 显示社区名称和管理员信息 -->
-    <div v-if="community.showAddPost">
-      <h1 class="community-title">{{ community.communityName }}</h1>
+    <div class="club-container">
+    <div v-if="club.showAddPost">
+      <h1 class="club-title">{{ club.clubName }}</h1>
       <div class="admins-container">
-        <h2 class="admins-title">Admin: {{ community.aid }}</h2>
+        <h2 class="admins-title">Admin: {{ club.cid }}</h2>
       </div>
     </div>
 
-    <!-- 搜索帖子部分 -->
     <div class="search-container">
       <label for="searchQuery">搜索帖子：</label>
       <input v-model="searchQuery" id="searchQuery" placeholder="输入标签搜索帖子">
       <button @click="searchPosts">搜索</button>
     </div>
 
-    <!-- 帖子列表 -->
     <div class="posts-container">
-      <Post v-for="(post, index) in community.posts" :key="index" :post="post" />
+      <Post v-for="(post, index) in sortedPosts" :key="index" :post="post" />
     </div>
 
-    <!-- 添加新帖子的表单 -->
-    <div v-if="community.showAddPost">
+    <div v-if="club.showAddPost">
       <div class="add-post-container">
         <h2>发表新帖</h2>
         <label for="postTitle">标题：</label>
@@ -33,6 +29,9 @@
         <label for="postContent">内容：</label>
         <textarea v-model="newPost.Pcontent" id="postContent" placeholder="输入帖子内容"></textarea>
 
+        <label for="postImage">插入图片：</label>
+        <input type="file" @change="onImageChange" id="postImage" accept="image/*" required>
+
         <button @click="addPost">发表帖子</button>
       </div>
     </div>
@@ -40,100 +39,99 @@
 </template>
 
 <script>
-import axios from 'axios'; // 导入 axios 以进行 HTTP 请求
-import { mapGetters } from 'vuex'; // 导入 Vuex 的 mapGetters 方法
-import Post from "@/components/post/Post.vue"; // 导入 Post 组件
+import axios from 'axios';
+import { mapGetters } from 'vuex';
+import Post from "@/components/post/Post.vue";
 
 export default {
   components: { Post },
+
   props: {
-    community: {
+    club: {
       type: Object,
-      required: true, // 确保 community 属性是必填的
+      required: true,
     },
   },
+
   computed: {
-    ...mapGetters('account', ['user']), // 从 Vuex store 中获取用户信息
+    ...mapGetters('account', ['user']),
+    sortedPosts() {
+      return [...this.club.posts].sort((a, b) => {
+        if (a.isPinned === b.isPinned) {
+          return new Date(b.date) - new Date(a.date);
+        }
+        return a.isPinned ? -1 : 1;
+      });
+    },
   },
+
   data() {
     return {
       newPost: {
-        Ptitle: '', // 新帖标题
-        Plabel: '', // 新帖标签
-        Pcontent: '', // 新帖内容
+        Ptitle: '',
+        Plabel: '',
+        Pcontent: '',
+        image: null, // 用于存储图片文件
       },
-      searchQuery: '', // 搜索查询
+      searchQuery: '',
     };
   },
+
   methods: {
+    onImageChange(event) {
+      const file = event.target.files[0];
+      if (file) {
+        this.newPost.image = file; // 存储文件
+      }
+    },
+
     async addPost() {
-      // 验证必填字段是否不为空
-      if (this.newPost.Ptitle.trim() === '' || this.newPost.Pcontent.trim() === '') {
-        alert('请输入帖子标题和内容。');
+      if (this.newPost.Ptitle.trim() === '' || this.newPost.Pcontent.trim() === '' || !this.newPost.image) {
+        alert('请输入帖子标题、内容，并上传至少一张图片。');
         return;
       }
 
-      // 准备帖子数据
-      const postData = {
-        Pid: null, // 假设 Pid 将由服务器生成
-        studentNumber: this.user.id, // 用户 ID
-        title: this.newPost.Ptitle.trim(), // 帖子标题
-        label: this.newPost.Plabel.trim(), // 帖子标签
-        content: this.newPost.Pcontent.trim(), // 帖子内容
-        communityId: this.$route.params.id, // 当前社区 ID
-      };
+      const formData = new FormData();
+      formData.append('Pid', null);
+      formData.append('studentNumber', this.user.id);
+      formData.append('title', this.newPost.Ptitle.trim());
+      formData.append('label', this.newPost.Plabel.trim());
+      formData.append('content', this.newPost.Pcontent.trim());
+      formData.append('clubId', this.$route.params.id);
+      formData.append('date', new Date().toISOString());
+      formData.append('isPinned', false);
+      formData.append('image', this.newPost.image); // 添加图片文件
 
       try {
-        // 发送 HTTP POST 请求创建新帖子
-        const response = await axios.post('http://127.0.0.1:8000/StudyApp/create_post/', postData);
+        const response = await axios.post('http://localhost:8080/iClub/createPost/', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
 
-        // 检查服务器的响应
         if (response.data.error_num === 0) {
-          // 如果成功，将新帖子添加到社区的帖子数组中
-          this.community.posts.push(response.data.post);
-
-          // 清空输入字段
-          this.newPost = {
-            Ptitle: '',
-            Plabel: '',
-            Pcontent: '',
-          };
-          // 重新加载页面
+          this.club.posts.push(response.data.post);
+          this.newPost = { Ptitle: '', Plabel: '', Pcontent: '', image: null };
           window.location.reload();
         } else {
-          // 如果出现错误，显示警告
           alert('创建帖子出错：' + response.data.msg);
         }
       } catch (error) {
-        // 捕获错误并输出到控制台
         console.error('创建帖子出错：', error);
       }
     },
 
     async searchPosts() {
-      // 如果搜索查询为空，获取所有帖子
       if (!this.searchQuery.trim()) {
-        const postsResponse = await axios.get(`http://127.0.0.1:8000/StudyApp/get_posts_by_community/${this.community.id}`);
-
-        // 输出响应信息
-        console.log(postsResponse);
-
-        // 更新帖子数组
-        this.$set(this.community, 'posts', postsResponse.data.posts);
+        const postsResponse = await axios.get(`http://localhost:8080/iClub/getPosts/${this.club.id}`);
+        this.$set(this.club, 'posts', postsResponse.data.posts);
         return;
       }
 
-      // 根据标签搜索帖子
       try {
-        const postsResponse = await axios.get(`http://127.0.0.1:8000/StudyApp/get_posts_by_community_and_plabel/${this.community.id}/${this.searchQuery}`);
-
-        // 输出响应信息
-        console.log(postsResponse);
-
-        // 更新帖子数组
-        this.$set(this.community, 'posts', postsResponse.data.posts);
+        const postsResponse = await axios.get(`http://localhost:8080/iClub/getPostsBySearch/${this.club.id}/${this.searchQuery}`);
+        this.$set(this.club, 'posts', postsResponse.data.posts);
       } catch (error) {
-        // 捕获错误并输出到控制台
         console.error('搜索帖子出错：', error);
       }
     },
@@ -142,50 +140,54 @@ export default {
 </script>
 
 <style scoped>
-.community-container {
+.club-container {
   width: 100%;
-  max-width: 1200px; /* 设置最大宽度 */
-  margin: 0 auto; /* 居中对齐 */
-  padding: 20px; /* 内边距 */
-  background-color: white; /* 背景色 */
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 盒子阴影效果 */
-  font-size: 1.2em; /* 字体大小 */
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  font-size: 1.2em;
 }
 
-/* 添加帖子容器样式 */
 .add-post-container {
-  margin-top: 21px; /* 上边距 */
+  margin-top: 21px;
 }
 
 .add-post-container h2 {
-  font-size: 18px; /* 标题字体大小 */
-  margin-bottom: 10px; /* 下边距 */
-  color: #333; /* 颜色 */
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #333;
 }
 
 .add-post-container label {
-  display: block; /* 以块级元素显示 */
-  margin-bottom: 5px; /* 下边距 */
-  font-size: 14px; /* 字体大小 */
-  color: #555; /* 颜色 */
+  display: block;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #555;
 }
 
 .add-post-container input,
 .add-post-container textarea {
-  width: 100%; /* 宽度为 100% */
-  margin-bottom: 10px; /* 下边距 */
-  padding: 10px; /* 内边距 */
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 10px;
 }
 
 .add-post-container button {
-  padding: 10px; /* 内边距 */
-  background-color: #007BFF; /* 按钮背景色 */
-  color: #fff; /* 字体颜色 */
-  border: none; /* 无边框 */
-  cursor: pointer; /* 鼠标指针样式 */
+  padding: 10px;
+  background-color: #007BFF;
+  color: #fff;
+  border: none;
+  cursor: pointer;
 }
 
 .add-post-container button:hover {
-  background-color: #0056b3; /* 悬停时的背景色 */
+  background-color: #0056b3;
+}
+
+.add-post-container img {
+  max-width: 100%;
+  height: auto;
 }
 </style>
