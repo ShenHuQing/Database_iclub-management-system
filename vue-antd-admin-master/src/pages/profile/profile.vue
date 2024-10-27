@@ -1,6 +1,6 @@
 <template>
   <div class="student-info">
-    <div v-if="isAdmin">
+    <div v-if="isAdmin === 1">
       <h2>管理员信息</h2>
       <img :src="admin.pictureId" alt="头像" style="width: 100px; height: 100px; border-radius: 50%;" />
       <p>姓名: {{ admin.name }}</p>
@@ -14,13 +14,13 @@
         <input v-model="admin.email" id="email" type="email" />
         <br>
         <label for="pictureID">头像:</label>
-        <input type="file" @change="onFileChange" id="aavatar" />
+        <input type="file" @change="onFileChange" id="pictureID" />
         <br>
         <button @click="saveChanges">保存更改</button>
       </div>
     </div>
 
-    <div v-else>
+    <div v-if="isAdmin === 0">
       <h2>学生信息</h2>
       <img :src="student.pictureId" alt="头像" style="width: 100px; height: 100px; border-radius: 50%;" />
       <p>姓名: {{ student.name }}</p>
@@ -65,7 +65,7 @@
 
 <script>
 import axios from 'axios';
-import { mapGetters } from 'vuex';
+import {mapGetters, mapMutations} from 'vuex';
 
 const instance = axios.create({
   baseURL: 'http://localhost:8080',  // 后端地址
@@ -75,7 +75,7 @@ const instance = axios.create({
 export default {
   data() {
     return {
-      isAdmin: false,
+      isAdmin: -1,
       admin: {
         id: '',
         password:'',
@@ -108,6 +108,7 @@ export default {
     this.fetchUserInfo();
   },
   methods: {
+    ...mapMutations('account', ['setUser']),
     toggleEditMode() {
       this.editing = !this.editing;
     },
@@ -115,20 +116,20 @@ export default {
       this.loading = true;
       const role = this.roles;
       if (role === 'admin') {
-        const id = this.user;
+        const id = this.user.id;
         instance.post('/iClub/get_admin_info', {id})
             .then(response => {
-              this.isAdmin = true;
+              this.isAdmin = 1;
               this.admin = response.data.data;
             })
             .catch(error => {
               console.error('获取管理员信息时出错:', error.response.data.error);
             });
       } else if (role === 'student') {
-        const id = this.user;
+        const id = this.user.id;
         instance.post('/iClub/get_student_info', {id})
             .then(response => {
-              this.isAdmin = false;
+              this.isAdmin = 0;
               this.student = response.data.data;
             })
             .catch(error => {
@@ -143,7 +144,7 @@ export default {
       if (file) {
         const reader = new FileReader();
         reader.onload = e => {
-          if (this.isAdmin) {
+          if (this.isAdmin === 1) {
             this.admin.pictureId = e.target.result;
           } else {
             this.student.pictureId = e.target.result;
@@ -153,13 +154,18 @@ export default {
       }
     },
     saveChanges() {
-      const payload = this.isAdmin ? this.admin : this.student;
-      const url = this.isAdmin
+      const payload = this.isAdmin === 1 ? this.admin : this.student;
+      const url = this.isAdmin === 1
           ? '/iClub/update_admin_info'
           : '/iClub/update_student_info';
 
       instance.post(url, payload)
           .then(response => {
+            if(this.isAdmin === 1) {
+              this.setUser(this.admin);
+            }else {
+              this.setUser(this.student);
+            }
             console.log('信息更改已保存:', response.data.message);
             this.editing = false;
           })
