@@ -10,7 +10,7 @@
 // 导入 axios 库用于发起 HTTP 请求
 import axios from 'axios';
 // 导入 Club 组件
-import Club from "@/components/club/Club.vue";
+import Club from "@/components/clubs/Clubs.vue";
 
 export default {
   components: {

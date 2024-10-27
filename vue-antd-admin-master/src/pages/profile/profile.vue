@@ -125,7 +125,7 @@ export default {
             .catch(error => {
               console.error('获取管理员信息时出错:', error.response.data.error);
             });
-      } else if (role === 'student') {
+      } else if (role === 'student' || role === 'staff') {
         const id = this.user.id;
         instance.post('/iClub/get_student_info', {id})
             .then(response => {
