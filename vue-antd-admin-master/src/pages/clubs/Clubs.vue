@@ -5,7 +5,7 @@
         <form-row label="社团类别">
           <a-form-item>
             <tag-select @change="handleTagSelectChange" placeholder="请选择社团类别">
-              <tag-select-option v-for="(label, index) in clubTypes" :key="index" :value="index+1">
+              <tag-select-option v-for="(label, index) in clubTypes" :key="index" :value="index + 1">
                 {{ label }}
               </tag-select-option>
             </tag-select>
@@ -33,7 +33,7 @@
       <a-list-item
           v-for="club in clubs"
           :key="club.id"
-          @click="gotoClub1example(club)"
+          @click="gotoClubDetail(club)"
           style="padding: 0 8px"
       >
         <a-card hoverable style="border-radius: 8px; transition: transform 0.3s;">
@@ -144,10 +144,11 @@ export default {
     this.fetchClubInfo();
   },
   methods: {
-    gotoClub1example() {
-      this.$router.push({path: '/club1example'})
+    gotoClubDetail() {
+      this.$router.push({path: '/clubdetail'})
     },
     handleTagSelectChange(value) {
+      console.log(1);
       if (!this.selectedTypes.includes(value)) {
         this.selectedTypes.push(value);
       } else {

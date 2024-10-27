@@ -10,7 +10,7 @@
 // 导入 axios 库用于发起 HTTP 请求
 import axios from 'axios';
 // 导入 Club 组件
-import Club from "@/components/clubs/Clubs.vue";
+import Club from "@/components/club/Club.vue";
 
 export default {
   components: {
@@ -31,21 +31,18 @@ export default {
     async fetchData(clubId) {
       try {
         // 使用 axios 请求获取社团详细信息
-        const clubDetailsResponse = await axios.get(`http://127.0.0.1:8000/StudyApp/get_club_details/${clubId}`);
+        const clubDetailsResponse = await axios.get(`http://localhost:8080/iClub/getClubDetails/${clubId}`);
         // 使用 axios 请求获取社团活动信息
-        const activitysResponse = await axios.get(`http://127.0.0.1:8000/StudyApp/get_activities/${clubId}`);
+        const activitysResponse = await axios.get(`http://localhost:8080/iClub/getActivities/${clubId}`);
 
         // 将获取的数据存储到 myClub 中
         this.myClub = {
           id: clubId,
           name: clubDetailsResponse.data.club.name, // 社团名称
           type: activitysResponse.data.type, // 社团活动类型
-          comment: [], // 初始化评论数组为空，后续可能需要填充
-          activities: activitysResponse.data.activities, // 社团活动列表
           description: clubDetailsResponse.data.description, // 社团描述
-          aid: clubDetailsResponse.data.club.Aid, // 社团的 Aid
-          aname: clubDetailsResponse.data.club.Aname, // 社团的 Aname
-          showAddPost: (clubDetailsResponse?.data?.club?.Aid !== -1), // 判断是否显示添加帖子按钮
+          posts:activitysResponse.data.posts,
+          showAddPost: (clubDetailsResponse?.data?.club?.Cid !== -1), // 判断是否显示添加帖子按钮
         };
 
         // 调用 fetchComments 方法以获取每个帖子的评论

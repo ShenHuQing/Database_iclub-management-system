@@ -61,6 +61,7 @@ export default {
       tagList.forEach((item) => {
         item.checked = this.checkAll
       })
+      console.log(1);
       this.emitChange()
     },
     emitChange() {

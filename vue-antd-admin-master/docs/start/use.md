@@ -48,7 +48,6 @@ master 分支是 Vue Antd Admin 的标准版代码，此分支代码适合用于
 │   ├── App.vue              # 应用入口组件
 │   ├── bootstrap.js         # 应用启动引导js
 │   └── main.js              # 应用入口js
-├── package.json             # package.json
 ├── README.md                # README.md
 └── vue.config.js            # vue 配置文件
 ```

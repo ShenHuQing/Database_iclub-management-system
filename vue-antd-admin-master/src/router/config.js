@@ -15,11 +15,11 @@ const options = {
       name: '个人信息',
       component: () => import('../pages/profile')
     },
-    // {
-    //   path: '/club1example',
-    //   name: '社团1信息',
-    //   component: () => import('@/components/club1example')
-    // },
+    {
+      path: '/clubdetail',
+      name: '社团信息',
+      component: () => import('@/pages/clubdetail/Clubdetail')
+    },
     {
       path: '*',
       name: '404',

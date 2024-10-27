@@ -1,5 +1,8 @@
 <template>
-  <a-checkable-tag @change="$emit('click')" class="tag-default" v-model="checked">
+  <a-checkable-tag
+      @change="$emit('click')"
+      class="tag-default"
+      v-model="checked">
     <slot></slot>
   </a-checkable-tag>
 </template>
@@ -18,6 +21,15 @@ export default {
     return {
       checked: false,
       isTagSelectOption: true
+    }
+  },
+  methods: {
+    toggleChecked() {
+      // 切换选中状态
+      this.checked = !this.checked;
+      // 触发父组件的 change 事件
+      this.$emit('change', this.checked);
+      this.$parent.emitChange(); // 通知父组件更新所有选项状态
     }
   }
 }
