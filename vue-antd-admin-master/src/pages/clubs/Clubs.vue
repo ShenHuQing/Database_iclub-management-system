@@ -4,16 +4,16 @@
       <a-form :form="form">
         <form-row label="社团类别">
           <a-form-item>
-            <!--            <tag-select placeholder="请选择社团类别">-->
-            <tag-select-option v-for="(label, index) in clubTypes"
-                               :key="index"
-                               :value="label"
-                               :checked="selectedTypes.includes(label)"
-                               @click="toggleTagSelection(label)"
-            >
-              {{ label }}
-            </tag-select-option>
-            <!--            </tag-select>-->
+<!--            <tag-select placeholder="请选择社团类别">-->
+              <tag-select-option v-for="(label, index) in clubTypes"
+                                 :key="index"
+                                 :value="label"
+                                 :checked="selectedTypes.includes(label)"
+                                 @click="toggleTagSelection(label)"
+              >
+                {{ label }}
+              </tag-select-option>
+<!--            </tag-select>-->
           </a-form-item>
         </form-row>
 
@@ -148,8 +148,8 @@ export default {
     this.fetchClubInfo();
   },
   methods: {
-    gotoClubDetail() {
-      this.$router.push({path: '/clubdetail'})
+    gotoClubDetail(club) {
+      this.$router.push({path: `/clubdetail/${club.id}`})
     },
     toggleTagSelection(label) {
       const index = this.selectedTypes.indexOf(label);

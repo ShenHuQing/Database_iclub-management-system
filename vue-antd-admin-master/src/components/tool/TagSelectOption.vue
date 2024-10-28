@@ -1,8 +1,9 @@
 <template>
   <a-checkable-tag
       @change="$emit('click')"
+      v-model="checked"
       class="tag-default"
-      v-model="checked">
+      >
     <slot></slot>
   </a-checkable-tag>
 </template>
@@ -23,15 +24,6 @@ export default {
       isTagSelectOption: true
     }
   },
-  methods: {
-    toggleChecked() {
-      // 切换选中状态
-      this.checked = !this.checked;
-      // 触发父组件的 change 事件
-      this.$emit('change', this.checked);
-      this.$parent.emitChange(); // 通知父组件更新所有选项状态
-    }
-  }
 }
 </script>
 
@@ -42,4 +34,8 @@ export default {
     height: auto;
     margin-right: 24px;
   }
+  //.tag-checked{
+  //  background-color: #1890ff;
+  //  color: #fff;
+  //}
 </style>
