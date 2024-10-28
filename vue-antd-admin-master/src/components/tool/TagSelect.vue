@@ -12,6 +12,12 @@ export default {
   name: 'TagSelect',
   Option: TagSelectOption,
   components: {TagSelectOption},
+  props: {
+    value: {
+      type: Array,
+      default: () => []
+    }
+  },
   data () {
     return {
       showTrigger: false,
@@ -61,12 +67,12 @@ export default {
       tagList.forEach((item) => {
         item.checked = this.checkAll
       })
-      console.log(1);
-      this.emitChange()
     },
-    emitChange() {
-      const selectedTags = this.getAllTags().filter(tag => tag.checked)
-      this.$emit('change', selectedTags.map(tag => tag.value))
+    handleTagSelectChange(tagValue, isChecked) {
+      const newSelectedTags = isChecked
+          ? [...this.value, tagValue]
+          : this.value.filter(tag => tag !== tagValue);
+      this.$emit('change', newSelectedTags);
     }
   }
 }

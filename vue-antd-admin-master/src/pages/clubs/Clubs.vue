@@ -4,8 +4,12 @@
       <a-form :form="form">
         <form-row label="社团类别">
           <a-form-item>
-            <tag-select @change="handleTagSelectChange" placeholder="请选择社团类别">
-              <tag-select-option v-for="(label, index) in clubTypes" :key="index" :value="index + 1">
+            <tag-select :value="selectedTypes" @change="handleTagSelectChange" placeholder="请选择社团类别">
+              <tag-select-option v-for="(label, index) in clubTypes"
+                                 :key="index"
+                                 :value="label"
+                                 :checked="selectedTypes.includes(label)"
+              >
                 {{ label }}
               </tag-select-option>
             </tag-select>
@@ -133,9 +137,7 @@ export default {
         }
       ],
       clubTypes: ['科技类', '人文类', '实践类', '体育类', '艺术类'],
-      selectedTypes: [
-
-      ],
+      selectedTypes: [],
       searchContent: '',
       loading: false,
     };
@@ -147,13 +149,9 @@ export default {
     gotoClubDetail() {
       this.$router.push({path: '/clubdetail'})
     },
-    handleTagSelectChange(value) {
-      console.log(1);
-      if (!this.selectedTypes.includes(value)) {
-        this.selectedTypes.push(value);
-      } else {
-        this.selectedTypes = this.selectedTypes.filter(type => type !== value);
-      }
+    handleTagSelectChange(updatedTags) {
+      this.selectedTypes = updatedTags;
+      console.log('选中的标签', this.selectedTypes);
     },
     fetchClubInfo() {
       this.loading = true;
@@ -170,7 +168,7 @@ export default {
     },
     fetchIndexClubInfo() {
       this.loading = true;
-      instance.post('/iClub/get_index_clubs_info', {type: this.selectedTypes, name: this.searchContent})
+      instance.post('/iClub/get_index_clubs_info', {index: this.searchContent})
           .then(response => {
             this.clubs = response.data.data;
           })
