@@ -4,15 +4,16 @@
       <a-form :form="form">
         <form-row label="社团类别">
           <a-form-item>
-            <tag-select :value="selectedTypes" @change="handleTagSelectChange" placeholder="请选择社团类别">
+<!--            <tag-select placeholder="请选择社团类别">-->
               <tag-select-option v-for="(label, index) in clubTypes"
                                  :key="index"
                                  :value="label"
                                  :checked="selectedTypes.includes(label)"
+                                 @click="toggleTagSelection(label)"
               >
                 {{ label }}
               </tag-select-option>
-            </tag-select>
+<!--            </tag-select>-->
           </a-form-item>
         </form-row>
 
@@ -123,7 +124,8 @@ export default {
     }
   },
   components: {
-    FormRow, TagSelect, TagSelectOption
+    // TagSelect,
+    FormRow,  TagSelectOption
     /*AvatarListItem, AvatarList, SearchForm*/},
   data() {
     return {
@@ -146,12 +148,17 @@ export default {
     this.fetchClubInfo();
   },
   methods: {
-    gotoClubDetail() {
-      this.$router.push({path: '/clubdetail'})
+    gotoClubDetail(club) {
+      this.$router.push({path: `/clubdetail/${club.id}`})
     },
-    handleTagSelectChange(updatedTags) {
-      this.selectedTypes = updatedTags;
-      console.log('选中的标签', this.selectedTypes);
+    toggleTagSelection(label) {
+      const index = this.selectedTypes.indexOf(label);
+      if (index === -1) {
+        this.selectedTypes.push(label);
+      } else {
+        this.selectedTypes.splice(index, 1);
+      }
+      console.log('当前选中的标签:', this.selectedTypes);
     },
     fetchClubInfo() {
       this.loading = true;
@@ -168,7 +175,7 @@ export default {
     },
     fetchIndexClubInfo() {
       this.loading = true;
-      instance.post('/iClub/get_index_clubs_info', {index: this.searchContent})
+      instance.post('/iClub/get_index_clubs_info', {type: this.selectedTypes, index: this.searchContent})
           .then(response => {
             this.clubs = response.data.data;
           })

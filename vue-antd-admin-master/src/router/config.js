@@ -16,7 +16,7 @@ const options = {
       component: () => import('../pages/profile')
     },
     {
-      path: '/clubdetail',
+      path: '/clubdetail/:id',
       name: '社团信息',
       component: () => import('@/pages/clubdetail/Clubdetail')
     },

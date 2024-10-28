@@ -68,12 +68,6 @@ export default {
         item.checked = this.checkAll
       })
     },
-    handleTagSelectChange(tagValue, isChecked) {
-      const newSelectedTags = isChecked
-          ? [...this.value, tagValue]
-          : this.value.filter(tag => tag !== tagValue);
-      this.$emit('change', newSelectedTags);
-    }
   }
 }
 </script>
