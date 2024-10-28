@@ -1,7 +1,7 @@
 <template>
   <page-layout :avatar="currUser.avatar">
     <div slot="headerContent">
-      <div class="title">{{welcome.timeFix[lang]}}，{{currUser}}，{{welcome.message[lang]}}</div>
+      <div class="title">{{welcome.timeFix[lang]}}，{{currUser.name}}，{{welcome.message[lang]}}</div>
       <div>{{"currUser.position[lang]"}}</div>
     </div>
     <template slot="extra">

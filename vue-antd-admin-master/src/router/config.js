@@ -16,9 +16,9 @@ const options = {
       component: () => import('../pages/profile')
     },
     {
-      path: '/club1example',
-      name: '社团1信息',
-      component: () => import('@/pages/club1example')
+      path: '/clubdetail/:id',
+      name: '社团信息',
+      component: () => import('@/pages/clubdetail/Clubdetail')
     },
     {
       path: '*',
@@ -70,7 +70,7 @@ const options = {
               cacheAble: false
             }
           },
-          component: () => import('@/pages/club'),
+          component: () => import('@/pages/clubs'),
         },
         {
           path: 'form',

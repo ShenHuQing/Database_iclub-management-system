@@ -24,6 +24,7 @@ export default {
   created() {
     // 组件创建时获取路由参数中的 clubId
     const clubId = this.$route.params.id;
+    console.log(clubId);
     // 调用 fetchData 方法以获取社团的详细信息
     this.fetchData(clubId);
   },

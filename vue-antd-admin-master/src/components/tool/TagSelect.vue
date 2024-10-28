@@ -2,7 +2,7 @@
   <div class="tag-select">
     <tag-select-option @click="toggleCheck">全部</tag-select-option>
     <slot></slot>
-<!--    <a @click="toggle" v-show="showTrigger" ref="trigger" class="trigger">展开<a-icon style="margin-left: 5px" :type="collapsed ? 'down' : 'up'"/></a>-->
+    <!--    <a @click="toggle" v-show="showTrigger" ref="trigger" class="trigger">展开<a-icon style="margin-left: 5px" :type="collapsed ? 'down' : 'up'"/></a>-->
   </div>
 </template>
 
@@ -12,6 +12,12 @@ export default {
   name: 'TagSelect',
   Option: TagSelectOption,
   components: {TagSelectOption},
+  props: {
+    value: {
+      type: Array,
+      default: () => []
+    }
+  },
   data () {
     return {
       showTrigger: false,
@@ -61,23 +67,23 @@ export default {
       tagList.forEach((item) => {
         item.checked = this.checkAll
       })
-    }
+    },
   }
 }
 </script>
 
 <style lang="less" scoped>
-  .tag-select{
-    user-select: none;
-    position: relative;
-    overflow: hidden;
-    max-height: 39px;
-    padding-right: 50px;
-    display: inline-block;
-  }
-  .trigger{
-    position: absolute;
-    top: 0;
-    right: 0;
-  }
+.tag-select{
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+  max-height: 39px;
+  padding-right: 50px;
+  display: inline-block;
+}
+.trigger{
+  position: absolute;
+  top: 0;
+  right: 0;
+}
 </style>

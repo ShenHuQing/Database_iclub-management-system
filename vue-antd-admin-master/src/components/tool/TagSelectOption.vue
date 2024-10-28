@@ -1,5 +1,9 @@
 <template>
-  <a-checkable-tag @change="$emit('click')" class="tag-default" v-model="checked">
+  <a-checkable-tag
+      @change="$emit('click')"
+      v-model="checked"
+      class="tag-default"
+      >
     <slot></slot>
   </a-checkable-tag>
 </template>
@@ -19,7 +23,7 @@ export default {
       checked: false,
       isTagSelectOption: true
     }
-  }
+  },
 }
 </script>
 
@@ -30,4 +34,8 @@ export default {
     height: auto;
     margin-right: 24px;
   }
+  //.tag-checked{
+  //  background-color: #1890ff;
+  //  color: #fff;
+  //}
 </style>

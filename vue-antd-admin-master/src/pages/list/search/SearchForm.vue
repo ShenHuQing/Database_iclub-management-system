@@ -9,7 +9,6 @@
             <tag-select-option>实践类</tag-select-option>
             <tag-select-option>体育类</tag-select-option>
             <tag-select-option>艺术类</tag-select-option>
-            <tag-select-option>其他</tag-select-option>
           </tag-select>
         </a-form-item>
       </form-row>
@@ -17,12 +16,11 @@
         <a-form-item>
           <a-select
             mode="multiple" style="max-width: 286px"
-            v-decorator="['owner', {initialValue: ['1', '2']}]"
           >
-            <a-select-option value="3">我自己</a-select-option>
-            <a-select-option value="1">吴家豪</a-select-option>
-            <a-select-option value="2">周星星</a-select-option>
-            <a-select-option value="4">李宁</a-select-option>
+<!--            <a-select-option value="3">我自己</a-select-option>-->
+<!--            <a-select-option value="1">吴家豪</a-select-option>-->
+<!--            <a-select-option value="2">周星星</a-select-option>-->
+<!--            <a-select-option value="4">李宁</a-select-option>-->
           </a-select>
         </a-form-item>
 <!--        <a @click="lookMyself">只看自己的</a>-->
