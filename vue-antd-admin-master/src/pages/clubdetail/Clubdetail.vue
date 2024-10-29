@@ -35,7 +35,6 @@ export default {
         const clubDetailsResponse = await axios.get(`http://localhost:8080/iClub/getClubDetails/${clubId}`);
         // 使用 axios 请求获取社团活动信息
         const activitysResponse = await axios.get(`http://localhost:8080/iClub/getActivities/${clubId}`);
-
         // 将获取的数据存储到 myClub 中
         this.myClub = {
           id: clubId,
