@@ -70,7 +70,24 @@ const options = {
               cacheAble: false
             }
           },
-          component: () => import('@/pages/clubs'),
+          component: PageView,
+          children: [
+            {
+              path: 'allClub',
+              name: '所有社团',
+              component: () => import('@/pages/clubs'),
+            },
+            {
+              path: 'details',
+              name: '社团详情',
+              component: () => import('@/pages/clubdetail'),
+            },
+            {
+              path: 'manage',
+              name: '管理社团',
+              component: () => import('@/pages/form/step'),
+            },
+          ]
         },
         {
           path: 'form',

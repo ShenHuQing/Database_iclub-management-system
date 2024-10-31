@@ -1,9 +1,9 @@
 <template>
     <div class="club-container">
     <div v-if="club.showAddPost">
-      <h1 class="club-title">{{ club.clubName }}</h1>
+      <h1 class="club-title">{{ club.name }}</h1>
       <div class="admins-container">
-        <h2 class="admins-title">Admin: {{ club.cid }}</h2>
+        <h2 class="admins-title">Admin: {{ club.id }}</h2>
       </div>
     </div>
 
