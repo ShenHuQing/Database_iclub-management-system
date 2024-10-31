@@ -172,7 +172,7 @@ export default {
           .catch(error => {
             console.error('保存更改时出错:', error.response.data.error);
           });
-    },
+    }
   }
 }
 </script>

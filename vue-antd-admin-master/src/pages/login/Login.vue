@@ -167,7 +167,6 @@ export default {
 
 
 
-
 <style lang="less" scoped>
 .common-layout{
   .top {
@@ -179,14 +178,16 @@ export default {
         text-decoration: none;
       }
       .logo {
-        height: 44px;
-        vertical-align: top;
-        margin-right: 16px;
+        height: 100px; /* 增加高度以放大图片 */
+        width: auto; /* 自动宽度以保持比例 */
+        vertical-align: top; /* 顶部对齐 */
+        margin-right: 16px; /* 右边距 */
+        margin-top: -43px;
       }
       .title {
         font-size: 33px;
-        color: @title-color;
-        font-family: 'Myriad Pro', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+        color: /*@title-color*/#B9C2E3;
+        font-family: /*'Myriad Pro', 'Helvetica Neue', Arial, Helvetica, sans-serif*/'Great Vibes', cursive;
         font-weight: 600;
         position: relative;
         top: 2px;
