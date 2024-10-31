@@ -30,6 +30,11 @@ const routerMap = {
     name: '分析页',
     component: () => import('@/pages/dashboard/analysis')
   },
+  clubs: {
+    path: 'clubs',
+    name: '社团页',
+    component: () => import('@/pages/clubs')
+  },
   form: {
     name: '表单页',
     icon: 'form',

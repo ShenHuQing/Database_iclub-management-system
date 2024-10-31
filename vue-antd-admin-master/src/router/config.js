@@ -11,16 +11,6 @@ const options = {
       component: () => import('@/pages/login')
     },
     {
-      path: '/profile',
-      name: '个人信息',
-      component: () => import('../pages/profile')
-    },
-    {
-      path: '/clubdetail/:id',
-      name: '社团信息',
-      component: () => import('@/pages/clubdetail/Clubdetail')
-    },
-    {
       path: '*',
       name: '404',
       component: () => import('@/pages/exception/404'),
@@ -62,15 +52,44 @@ const options = {
           ]
         },
         {
-          path: 'club',
-          name: '社团页',
+          path: 'information',
+          name: '信息页',
           meta: {
-            icon: 'club',
+            icon: 'appstore-o',
             page: {
               cacheAble: false
             }
           },
-          component: () => import('@/pages/clubs'),
+          component: PageView,
+          children: [
+            {
+              path: 'clubs',
+              name: '社团页',
+              component: () => import('@/pages/clubs'),
+            }
+          ]
+        },
+        // {
+        //   path: 'clubs',
+        //   name: '社团页',
+        //   meta: {
+        //     icon: 'appstore-o',
+        //     page: {
+        //       cacheAble: false
+        //     }
+        //   },
+        //   component: () => import('@/pages/clubs'),
+        // },
+        {
+          path: '/clubdetail/:id',
+          name: '社团信息',
+          component: () => import('@/pages/clubdetail/Clubdetail'),
+          meta: {
+            invisible: true, // 添加此属性
+            page: {
+              cacheAble: true
+            }
+          }
         },
         {
           path: 'form',
@@ -259,6 +278,17 @@ const options = {
             }
           },
           component: () => import('@/pages/form/basic')
+        },
+        {
+          path: '/profile',
+          name: '个人中心',
+          component: () => import('../pages/profile'),
+          meta: {
+            invisible: true,
+            page: {
+              cacheAble: true
+            }
+          }
         },
         // {
         //   name: '带参菜单',

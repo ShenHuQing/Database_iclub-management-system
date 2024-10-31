@@ -133,6 +133,7 @@ function loadRoutes(routesConfig) {
   const rootRoute = router.options.routes.find(item => item.path === '/')
   const menuRoutes = rootRoute && rootRoute.children
   if (menuRoutes) {
+    mergeI18nFromRoutes(i18n, menuRoutes)
     store.commit('setting/setMenuData', menuRoutes)
   }
 }
