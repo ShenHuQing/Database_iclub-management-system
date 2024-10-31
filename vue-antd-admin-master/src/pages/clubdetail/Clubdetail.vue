@@ -55,13 +55,18 @@
 
       <div v-if="activeTab === 'comments'" class="comment-list">
         <a-card :bordered="false">
+          <!-- 检查评论是否为空 -->
+          <div v-if="comments.length === 0" class="no-comments">
+            这里是无人区
+          </div>
+          <div v-else>
           <a-list itemLayout="vertical">
             <a-list-item v-for="comment in comments" :key="comment.id">
 
               <a-list-item-meta>
                 <div slot="description">
                   <div class="author">
-                    <a-avatar size="small" src="https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png" />
+                    <a-avatar size="small" :src="comment.pictureId" />
                     <span style="margin-left: 10px">{{ comment.authorName }}</span>
                     <em>发布在</em>
                     <em>{{ comment.date }}</em>
@@ -76,38 +81,43 @@
 
                 <!-- Action buttons for like and reply -->
                 <div slot="actions" class="actions">
-                  <a-icon type="like-o" style="margin-right: 8px; line-height: 1.5;" @click="likeComment(comment)" />
+                  <a-icon :type="comment.likedByCurrentUser ? 'like' : 'like-o'"
+                          :style="{ color: comment.likedByCurrentUser ? '#1890ff' : '#000000' }"
+                          style="margin-right: 8px; line-height: 1.5;"
+                          @click="likeComment(comment)" />
                   <span style="margin-left: -12px;line-height: 1.3;">{{ comment.likes }}</span>
                   <a-icon type="message" style="margin-left: 25px;margin-right: 8px; line-height: 1.5;" @click="replyToComment(comment)" />
+                  <a-icon type="delete" style="margin-left: 25px;margin-right: 8px; line-height: 1.5;" @click="deleteComment(comment)" />
                 </div>
               </div>
 
               <!-- View replies button moved below the action buttons -->
               <div v-if="comment.replies.length > 0" class="view-replies">
                 <a-button type="link" @click="toggleReplies(comment)">
-                  查看回复 ({{ comment.replies.length }})
+                  {{ comment.showReplies ? '收起回复' : '展开回复' }} ({{ comment.replies.length }})
                 </a-button>
               </div>
 
               <div v-if="comment.showReplies" class="replies">
-                <a-list
-                    itemLayout="vertical"
-                    :dataSource="comment.replies"
-                >
+                <a-list itemLayout="vertical" :dataSource="comment.replies">
                   <template v-slot:renderItem="reply">
                     <a-list-item :key="reply.id">
                       <div class="reply-content">
-                        <a-avatar size="small" src="https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png" />
-                        <a>{{ reply.replyName ? '@' + reply.replyName + ' ' : '' }}{{ reply.authorName }}</a>：
-                        {{ reply.content }}
+                        <a-avatar size="small" :src="reply.pictureId" />
+                        <a>{{ reply.replyName ? '@' + reply.replyName + ' ' : '' }}{{ reply.authorName }}</a>： {{ reply.content }}
                         <span class="date-info">发布在</span>
                         <span class="date-info">{{ reply.date }}</span>
                       </div>
+
                       <span class="reply-actions">
-        <a-icon type="like-o" style="margin-right: 8px; line-height: 1.5;" @click="likeReply(comment, reply)" />
+                        <a-icon :type="reply.likedByCurrentUser ? 'like' : 'like-o'"
+                                :style="{ color: reply.likedByCurrentUser ? '#1890ff' : '#000000' }"
+                                style="margin-right: 8px; line-height: 1.5;"
+                                @click="likeReply(comment, reply)" />
                         <span style="margin-left: -12px;line-height: 1.3;">{{ reply.likes }}</span>
-        <a-icon type="message" style="margin-left: 25px;margin-right: 8px; line-height: 1.5;" @click="replyToReply(comment, reply)" />
-      </span>
+                        <a-icon type="message" style="margin-left: 25px;margin-right: 8px; line-height: 1.5;" @click="replyToReply(comment, reply)" />
+                        <a-icon type="delete" style="margin-left: 25px;margin-right: 8px; line-height: 1.5;" @click="deleteReply(comment, reply)" />
+                      </span>
                     </a-list-item>
                   </template>
                 </a-list>
@@ -115,8 +125,11 @@
 
             </a-list-item>
           </a-list>
+          </div>
 
           <div class="comment-box">
+            <a-alert type="error" :closable="true" v-show="error" :message="error" showIcon
+                     style="margin-bottom: 24px; width: 100%; max-width: 600px;"/>
             <a-input
                 v-model="newComment"
                 :placeholder="commentPlaceholder"
@@ -127,16 +140,28 @@
 
         </a-card>
       </div>
-
     </div>
   </div>
 </template>
 
 <script>
+import {mapGetters} from "vuex";
+import axios from "axios";
+
+const instance = axios.create({
+  baseURL: 'http://localhost:8080',  // 后端地址
+  withCredentials: true,
+});
+
 export default {
   name: "ClubDetail",
+  computed: {
+    ...mapGetters('account', ['user','roles']),
+  },
   data() {
     return {
+      currUser: this.user,
+      currName: 'Herry',
       basicInfo: {
         id: '',
         name: '编程爱好者协会',
@@ -155,6 +180,7 @@ export default {
           pictureId: require('../../assets/img/preview.png'),
         }
       ],
+      // comments: [],
       comments: [
         {
           id: '1',
@@ -164,6 +190,8 @@ export default {
           date: '2023-05-15 17:00',
           likes: 0,
           showReplies: false,
+          likedByCurrentUser: false,
+          pictureId: require('../../assets/img/preview.png'),
           replies: [
             {
               id: '01',
@@ -173,7 +201,9 @@ export default {
               date: '2023-05-15 17:01',
               likes: 0,
               replyId: '',
-              replyName: ''
+              replyName: '',
+              likedByCurrentUser: false,
+              pictureId: require('../../assets/img/preview.png'),
             },
             {
               id: '02',
@@ -182,7 +212,10 @@ export default {
               authorId: '02',
               date: '2023-05-15 17:05',
               likes: 0,
-              replyName: '123'
+              replyId: '01',
+              replyName: '123',
+              likedByCurrentUser: false,
+              pictureId: require('../../assets/img/preview.png'),
             }
           ]
         },
@@ -194,7 +227,9 @@ export default {
           date: '2023-05-15 17:00',
           likes: 0,
           showReplies: false,
-          replies: []
+          likedByCurrentUser: false,
+          replies: [],
+          pictureId: require('../../assets/img/preview.png'),
         },
         {
           id: '3',
@@ -204,7 +239,9 @@ export default {
           date: '2023-05-15 17:00',
           likes: 0,
           showReplies: false,
-          replies: []
+          likedByCurrentUser: false,
+          replies: [],
+          pictureId: require('../../assets/img/preview.png'),
         },
         {
           id: '4',
@@ -214,7 +251,9 @@ export default {
           date: '2023-05-15 17:00',
           likes: 0,
           showReplies: false,
-          replies: []
+          likedByCurrentUser: false,
+          replies: [],
+          pictureId: require('../../assets/img/preview.png'),
         },
       ],
       newComment:'',
@@ -223,21 +262,48 @@ export default {
       joined: false,
       followed: false,
       activeTab: "activities",
-      loading: false
+      loading: false,
+      error: ''
     };
   },
+  mounted() {
+    this.fetchData();
+  },
   methods: {
-    mounted() {
-
+    async fetchData() {
+      this.loading = true;
+      const clubId = this.$route.params.id;
+      try {
+        const response = await instance.get(`/iClub/fetchData/${clubId}`);
+        this.basicInfo = response.data.data.basicInfo;
+        this.activities = response.data.data.activities;
+        this.comments = response.data.data.comments;
+      } catch (error) {
+        console.error('获取社团详情信息时出错:', error);
+      } finally {
+        this.loading = false;
+      }
     },
     toggleReplies(comment) {
       comment.showReplies = !comment.showReplies;
     },
     likeComment(comment) {
-      comment.likes++;
+      if (comment.likedByCurrentUser) {
+        comment.likes -= 1;
+        comment.likedByCurrentUser = false;
+      } else {
+        comment.likes += 1;
+        comment.likedByCurrentUser = true;
+      }
     },
     likeReply(comment, reply) {
-      reply.likes++;
+      if (reply.likedByCurrentUser) {
+        reply.likes -= 1;
+        reply.likedByCurrentUser = false;
+      } else {
+        reply.likes += 1;
+        reply.likedByCurrentUser = true;
+      }
     },
     replyToComment(comment) {
       this.replyTarget = { type: 'comment', target: comment };
@@ -247,9 +313,26 @@ export default {
       this.replyTarget = { type: 'reply', target: reply, parent: comment };
       this.commentPlaceholder = `@${reply.authorName}`;
     },
+    // 删除评论及其回复
+    deleteComment(comment) {
+      this.error = '';
+      if (comment.authorId === this.currUser) {
+        this.comments = this.comments.filter(c => c.id !== comment.id);
+      } else {
+        this.error = '你不能删除别人的评论';
+      }
+    },
+    // 删除回复
+    deleteReply(comment, reply) {
+      this.error = '';
+      if (reply.authorId === this.currUser) {
+        comment.replies = comment.replies.filter(r => r.id !== reply.id);
+      } else {
+        this.error = '你不能删除别人的回复';
+      }
+    },
     joinSociety() {
       this.joined = !this.joined;
-      console.log(this.activities)
     },
     followSociety() {
       this.followed = !this.followed;
@@ -258,11 +341,13 @@ export default {
       if (this.replyTarget) {
         const reply = {
           id: Date.now().toString(),
-          authorName: '我',
+          authorName: this.currName,
+          authorId: this.currUser,
           content: this.newComment,
           date: new Date().toLocaleString(),
           likes: 0,
-          replyName: this.replyTarget.type === 'reply' ? this.replyTarget.target.authorName : ''
+          replyName: this.replyTarget.type === 'reply' ? this.replyTarget.target.authorName : '',
+          replyId: this.replyTarget.type === 'reply'? this.replyTarget.target.authorId : ''
         };
         if (this.replyTarget.type === 'comment') {
           this.replyTarget.target.replies.push(reply);
@@ -273,7 +358,8 @@ export default {
       } else {
         const newComment = {
           id: Date.now().toString(),
-          authorName: '我',
+          authorName: this.currName,
+          authorId: this.currUser,
           content: this.newComment,
           date: new Date().toLocaleString(),
           likes: 0,
@@ -310,6 +396,10 @@ export default {
   height: 150px;
   border-radius: 10px;
   margin-right: 20px;
+}
+
+.liked {
+  color: blue;
 }
 
 .info {
@@ -412,6 +502,13 @@ export default {
       font-style: normal;
       margin-left: 16px;
     }
+  }
+
+  .no-comments {
+    text-align: center; /* 使文本居中 */
+    color: rgba(0, 0, 0, 0.5); /* 设置为浅色 */
+    font-size: 18px; /* 调整字体大小 */
+    margin-top: 20px; /* 添加顶部间距 */
   }
 }
 </style>
