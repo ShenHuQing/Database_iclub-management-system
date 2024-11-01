@@ -92,7 +92,7 @@
                           @click="likeComment(comment)" />
                   <span style="margin-left: -12px;line-height: 1.3;">{{ comment.likes }}</span>
                   <a-icon type="message" style="margin-left: 25px;margin-right: 8px; line-height: 1.5;" @click="replyToComment(comment)" />
-                  <a-icon type="delete" style="margin-left: 25px;margin-right: 8px; line-height: 1.5;" @click="deleteComment(comment)" />
+                  <a-icon v-if="comment.authorId === user.id" type="delete" style="margin-left: 25px;margin-right: 8px; line-height: 1.5;" @click="deleteComment(comment)" />
                 </div>
               </div>
 
@@ -122,7 +122,7 @@
                                 @click="likeReply(reply)" />
                         <span style="margin-left: -12px;line-height: 1.3;">{{ reply.likes }}</span>
                         <a-icon type="message" style="margin-left: 25px;margin-right: 8px; line-height: 1.5;" @click="replyToReply(comment, reply)" />
-                        <a-icon type="delete" style="margin-left: 25px;margin-right: 8px; line-height: 1.5;" @click="deleteReply(comment, reply)" />
+                        <a-icon v-if="reply.authorId === user.id" type="delete" style="margin-left: 25px;margin-right: 8px; line-height: 1.5;" @click="deleteReply(comment, reply)" />
                       </span>
                     </a-list-item>
                   </template>
@@ -307,7 +307,6 @@ export default {
     },
     // 删除评论及其回复
     async deleteComment(comment) {
-      if (comment.authorId === this.user.id) {
         await instance.delete('iClub/deleteComment', {
           data:{
             commentId: comment.id,
@@ -326,13 +325,9 @@ export default {
               console.error('评论删除失败，请重试', error);
               this.$message.error('评论删除失败，服务器出错，请稍后再试', 3);
             })
-      } else {
-        this.$message.error('你不能删除别人的评论', 3);
-      }
     },
     // 删除回复
     async deleteReply(comment, reply) {
-      if (reply.authorId === this.user.id) {
         await instance.delete('iClub/deleteReply', {
           data: {
             replyId: reply.id,
@@ -351,9 +346,6 @@ export default {
               console.error('回复删除失败，请重试', error);
               this.$message.error('回复删除失败，服务器出错，请稍后再试', 3);
             })
-      } else {
-        this.$message.error('你不能删除别人的回复', 3);
-      }
     },
     joinSociety() {
       this.joined = !this.joined;
