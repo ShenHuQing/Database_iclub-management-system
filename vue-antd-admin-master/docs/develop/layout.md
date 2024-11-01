@@ -41,7 +41,7 @@ lang: zh-CN
   children: [
     {
       path: 'basic',
-      name: '基础表单',
+      name: '活动申请',
       component: () => import('@/pages/form/basic/BasicForm'),
     }
   ]

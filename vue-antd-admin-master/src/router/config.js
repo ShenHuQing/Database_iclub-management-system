@@ -69,17 +69,6 @@ const options = {
             }
           ]
         },
-        // {
-        //   path: 'clubs',
-        //   name: '社团页',
-        //   meta: {
-        //     icon: 'appstore-o',
-        //     page: {
-        //       cacheAble: false
-        //     }
-        //   },
-        //   component: () => import('@/pages/clubs'),
-        // },
         {
           path: '/clubdetail/:id',
           name: '社团信息',
@@ -104,12 +93,12 @@ const options = {
           children: [
             {
               path: 'basic',
-              name: '基础表单',
+              name: '活动申请',
               component: () => import('@/pages/form/basic'),
             },
             {
               path: 'step',
-              name: '分步表单',
+              name: '社团报名',
               component: () => import('@/pages/form/step'),
             },
             {

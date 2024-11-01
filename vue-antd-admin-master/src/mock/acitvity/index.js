@@ -1,7 +1,7 @@
 import Mock from 'mockjs'
 import '@/mock/extend'
 
-const projectArr = Mock.mock({
+const activityArr = Mock.mock({
   'list|6': [
     {
       logo: '@LOGO',
@@ -10,6 +10,6 @@ const projectArr = Mock.mock({
   ]
 }).list
 
-Mock.mock('/project', 'get', () => {
-  return projectArr
+Mock.mock('/activity', 'get', () => {
+  return activityArr
 })
