@@ -13,7 +13,7 @@
       </div>
     </div>
 
-    <!-- 标签切换 -->
+    标签切换
     <div class="tabs">
       <button :class="{ active: activeTab === 'activities' }" @click="activeTab = 'activities'">
         社团活动
@@ -23,33 +23,38 @@
       </button>
     </div>
 
-    <!-- 内容显示 -->
+    内容显示
     <div class="content">
       <div v-if="activeTab === 'activities'" class="activity-list">
-        <a-row :gutter="16">
-          <a-col :span="8" v-for="activity in activities" :key="activity.id">
-            <a-card hoverable style="border-radius: 8px; overflow: hidden; transition: transform 0.3s;">
-              <img
-                  :src="activity.pictureId"
-                  height="200"
-                  style="border-top-left-radius: 8px; border-top-right-radius: 8px; object-fit: cover; width: 100%;"
-              />
-<!--              <a-card-meta style="padding: 9px;" :title="activity.name"-->
-<!--                           :description="`${activity.start_time} - ${activity.end_time} | 地点：${activity.venue}`"-->
-<!--                           />-->
-              <div style="padding: 16px;">
-                <div class="activity-info">
-                  <h3 class="activity-title">{{ activity.name }}</h3>
-                  <p class="activity-time" style="font-weight: bold; color: #999;">
-                    {{ activity.start_time }} - {{ activity.end_time }}
-                  </p>
-                  <p class="activity-venue" style="margin: 8px 0;">地点：{{ activity.venue }}</p>
-                  <p class="activity-content" style="color: #666;">{{ activity.content }}</p>
+        <div v-if="activities.length === 0" class="no-activities">
+          这里是无人区
+        </div>
+        <div v-else>
+          <a-row :gutter="16">
+            <a-col :span="8" v-for="activity in activities" :key="activity.id">
+              <a-card hoverable style="border-radius: 8px; overflow: hidden; transition: transform 0.3s;">
+                <img
+                    :src="activity.pictureId"
+                    height="200"
+                    style="border-top-left-radius: 8px; border-top-right-radius: 8px; object-fit: cover; width: 100%;"
+                />
+                <!--              <a-card-meta style="padding: 9px;" :title="activity.name"-->
+                <!--                           :description="`${activity.start_time} - ${activity.end_time} | 地点：${activity.venue}`"-->
+                <!--                           />-->
+                <div style="padding: 16px;">
+                  <div class="activity-info">
+                    <h3 class="activity-title">{{ activity.name }}</h3>
+                    <p class="activity-time" style="font-weight: bold; color: #999;">
+                      {{ activity.start_time }} - {{ activity.end_time }}
+                    </p>
+                    <p class="activity-venue" style="margin: 8px 0;">地点：{{ activity.venue }}</p>
+                    <p class="activity-content" style="color: #666;">{{ activity.content }}</p>
+                  </div>
                 </div>
-              </div>
-            </a-card>
-          </a-col>
-        </a-row>
+              </a-card>
+            </a-col>
+          </a-row>
+        </div>
       </div>
 
 
@@ -60,80 +65,79 @@
             这里是无人区
           </div>
           <div v-else>
-          <a-list itemLayout="vertical">
-            <a-list-item v-for="comment in comments" :key="comment.id">
+            <a-list itemLayout="vertical">
+              <a-list-item v-for="comment in comments" :key="comment.id">
 
-              <a-list-item-meta>
-                <div slot="description">
-                  <div class="author">
-                    <a-avatar size="small" :src="comment.pictureId" />
-                    <span style="margin-left: 10px">{{ comment.authorName }}</span>
-                    <em>发布在</em>
-                    <em>{{ comment.date }}</em>
+                <a-list-item-meta>
+                  <div slot="description">
+                    <div class="author">
+                      <a-avatar size="small" :src="comment.pictureId" />
+                      <span style="margin-left: 10px">{{ comment.authorName }}</span>
+                      <em>发布在</em>
+                      <em>{{ comment.date }}</em>
+                    </div>
+                  </div>
+                </a-list-item-meta>
+
+                <div class="content">
+                  <div class="detail">
+                    {{ comment.content }}
+                  </div>
+
+                  <!-- Action buttons for like and reply -->
+                  <div slot="actions" class="actions">
+                    <a-icon :type="comment.likedByCurrentUser ? 'like' : 'like-o'"
+                            :style="{ color: comment.likedByCurrentUser ? '#1890ff' : '#000000' }"
+                            style="margin-right: 8px; line-height: 1.5;"
+                            @click="likeComment(comment)" />
+                    <span style="margin-left: -12px;line-height: 1.3;">{{ comment.likes }}</span>
+                    <a-icon type="message" style="margin-left: 25px;margin-right: 8px; line-height: 1.5;" @click="replyToComment(comment)" />
+                    <a-icon type="delete" style="margin-left: 25px;margin-right: 8px; line-height: 1.5;" @click="deleteComment(comment)" />
                   </div>
                 </div>
-              </a-list-item-meta>
 
-              <div class="content">
-                <div class="detail">
-                  {{ comment.content }}
+                <!-- View replies button moved below the action buttons -->
+                <div v-if="comment.replies.length > 0" class="view-replies">
+                  <a-button type="link" @click="toggleReplies(comment)">
+                    {{ comment.showReplies ? '收起回复' : '展开回复' }} ({{ comment.replies.length }})
+                  </a-button>
                 </div>
 
-                <!-- Action buttons for like and reply -->
-                <div slot="actions" class="actions">
-                  <a-icon :type="comment.likedByCurrentUser ? 'like' : 'like-o'"
-                          :style="{ color: comment.likedByCurrentUser ? '#1890ff' : '#000000' }"
-                          style="margin-right: 8px; line-height: 1.5;"
-                          @click="likeComment(comment)" />
-                  <span style="margin-left: -12px;line-height: 1.3;">{{ comment.likes }}</span>
-                  <a-icon type="message" style="margin-left: 25px;margin-right: 8px; line-height: 1.5;" @click="replyToComment(comment)" />
-                  <a-icon type="delete" style="margin-left: 25px;margin-right: 8px; line-height: 1.5;" @click="deleteComment(comment)" />
-                </div>
-              </div>
+                <div v-if="comment.showReplies" class="replies">
+                  <a-list itemLayout="vertical" :dataSource="comment.replies">
+                    <template v-slot:renderItem="reply">
+                      <a-list-item :key="reply.id">
+                        <div class="reply-content">
+                          <a-avatar size="small" :src="reply.pictureId" />
+                          <a> {{reply.authorName}} </a>
+                          <a>{{ reply.replyName ? '@' + reply.replyName + ' ' : ''}}</a>： {{ reply.content }}
+                          <span class="date-info">发布在</span>
+                          <span class="date-info">{{ reply.date }}</span>
+                        </div>
 
-              <!-- View replies button moved below the action buttons -->
-              <div v-if="comment.replies.length > 0" class="view-replies">
-                <a-button type="link" @click="toggleReplies(comment)">
-                  {{ comment.showReplies ? '收起回复' : '展开回复' }} ({{ comment.replies.length }})
-                </a-button>
-              </div>
-
-              <div v-if="comment.showReplies" class="replies">
-                <a-list itemLayout="vertical" :dataSource="comment.replies">
-                  <template v-slot:renderItem="reply">
-                    <a-list-item :key="reply.id">
-                      <div class="reply-content">
-                        <a-avatar size="small" :src="reply.pictureId" />
-                        <a>{{ reply.replyName ? '@' + reply.replyName + ' ' : '' }}{{ reply.authorName }}</a>： {{ reply.content }}
-                        <span class="date-info">发布在</span>
-                        <span class="date-info">{{ reply.date }}</span>
-                      </div>
-
-                      <span class="reply-actions">
+                        <span class="reply-actions">
                         <a-icon :type="reply.likedByCurrentUser ? 'like' : 'like-o'"
                                 :style="{ color: reply.likedByCurrentUser ? '#1890ff' : '#000000' }"
                                 style="margin-right: 8px; line-height: 1.5;"
-                                @click="likeReply(comment, reply)" />
+                                @click="likeReply(reply)" />
                         <span style="margin-left: -12px;line-height: 1.3;">{{ reply.likes }}</span>
                         <a-icon type="message" style="margin-left: 25px;margin-right: 8px; line-height: 1.5;" @click="replyToReply(comment, reply)" />
                         <a-icon type="delete" style="margin-left: 25px;margin-right: 8px; line-height: 1.5;" @click="deleteReply(comment, reply)" />
                       </span>
-                    </a-list-item>
-                  </template>
-                </a-list>
-              </div>
+                      </a-list-item>
+                    </template>
+                  </a-list>
+                </div>
 
-            </a-list-item>
-          </a-list>
+              </a-list-item>
+            </a-list>
           </div>
 
           <div class="comment-box">
-            <a-alert type="error" :closable="true" v-show="error" :message="error" showIcon
-                     style="margin-bottom: 24px; width: 100%; max-width: 600px;"/>
             <a-input
                 v-model="newComment"
                 :placeholder="commentPlaceholder"
-                @pressEnter="postComment"
+                @pressEnter="post"
                 style="width: 100%; max-width: 600px;"
             />
           </div>
@@ -160,18 +164,16 @@ export default {
   },
   data() {
     return {
-      currUser: this.user,
-      currName: 'Herry',
       basicInfo: {
         id: '',
-        name: '编程爱好者协会',
+        name: '',
         type: '',
-        description: '这是一个热爱编程的社团，致力于提高学生的编程水平。',
-        pictureId: "https://via.placeholder.com/150", // 社团图片 URL
+        description: '',
+        pictureId: '', // 社团图片 URL
       },
       activities: [
         {
-          id: '1',
+          id: 1,
           name: '编程马拉松',
           content: '不理解是干啥的',
           start_time: '2023-05-15 16:00',
@@ -194,66 +196,19 @@ export default {
           pictureId: require('../../assets/img/preview.png'),
           replies: [
             {
-              id: '01',
-              authorName: '123',
+              id: '1',
+              authorName: 'lihua',
               content: '社团活动真的很棒！',
               authorId: '01',
               date: '2023-05-15 17:01',
               likes: 0,
               replyId: '',
               replyName: '',
+              commentId:'',
               likedByCurrentUser: false,
               pictureId: require('../../assets/img/preview.png'),
             },
-            {
-              id: '02',
-              authorName: '124',
-              content: '社团活动真的很棒！',
-              authorId: '02',
-              date: '2023-05-15 17:05',
-              likes: 0,
-              replyId: '01',
-              replyName: '123',
-              likedByCurrentUser: false,
-              pictureId: require('../../assets/img/preview.png'),
-            }
           ]
-        },
-        {
-          id: '2',
-          authorName: '李华',
-          content: '社团活动真的很棒！',
-          authorId: '01',
-          date: '2023-05-15 17:00',
-          likes: 0,
-          showReplies: false,
-          likedByCurrentUser: false,
-          replies: [],
-          pictureId: require('../../assets/img/preview.png'),
-        },
-        {
-          id: '3',
-          authorName: '李华',
-          content: '社团活动真的很棒！',
-          authorId: '01',
-          date: '2023-05-15 17:00',
-          likes: 0,
-          showReplies: false,
-          likedByCurrentUser: false,
-          replies: [],
-          pictureId: require('../../assets/img/preview.png'),
-        },
-        {
-          id: '4',
-          authorName: '李华',
-          content: '社团活动真的很棒！',
-          authorId: '01',
-          date: '2023-05-15 17:00',
-          likes: 0,
-          showReplies: false,
-          likedByCurrentUser: false,
-          replies: [],
-          pictureId: require('../../assets/img/preview.png'),
         },
       ],
       newComment:'',
@@ -263,7 +218,6 @@ export default {
       followed: false,
       activeTab: "activities",
       loading: false,
-      error: ''
     };
   },
   mounted() {
@@ -274,12 +228,10 @@ export default {
       this.loading = true;
       const clubId = this.$route.params.id;
       try {
-<<<<<<< Updated upstream
         const response = await instance.get(`/iClub/fetchData/${clubId}`);
         this.basicInfo = response.data.data.basicInfo;
         this.activities = response.data.data.activities;
         this.comments = response.data.data.comments;
-=======
         // 使用 axios 请求获取社团详细信息
         const clubDetailsResponse = await axios.post(`http://localhost:8080/iClub/getClubDetails`, {
           clubId: clubId
@@ -299,34 +251,74 @@ export default {
 
         // 调用 fetchComments 方法以获取每个帖子的评论
         await this.fetchComments(this.myClub.activities);
->>>>>>> Stashed changes
+        const clubDetailResponse = await instance.get(`/iClub/getClubDetails/${clubId}`);
+        this.basicInfo = clubDetailResponse.data.data;
+        console.log(this.basicInfo.pictureId);
+        const commentsResponse = await instance.post(`/iClub/getComments`, {studentId: this.user.id, clubId: this.basicInfo.id});
+        this.comments = commentsResponse.data.data;
+        // this.activities = response.data.data.activities;
       } catch (error) {
         console.error('获取社团详情信息时出错:', error);
       } finally {
         this.loading = false;
       }
     },
-<<<<<<< Updated upstream
     toggleReplies(comment) {
       comment.showReplies = !comment.showReplies;
     },
-    likeComment(comment) {
-      if (comment.likedByCurrentUser) {
-        comment.likes -= 1;
-        comment.likedByCurrentUser = false;
-      } else {
-        comment.likes += 1;
-        comment.likedByCurrentUser = true;
-      }
+    async likeComment(comment) {
+      const action = comment.likedByCurrentUser ? 'unlike' : 'like';
+      await instance.post('/iClub/changeCommentLike',
+          {clubId: this.basicInfo.id,
+            studentId: this.user.id,
+            commentId: comment.id,
+            action: action}
+      )
+          .then(response => {
+            const res = response.data;
+            if (res.code === 0) {
+              if (comment.likedByCurrentUser) {
+                comment.likes -= 1;
+                comment.likedByCurrentUser = false;
+              } else {
+                comment.likes += 1;
+                comment.likedByCurrentUser = true;
+              }
+            } else {
+              this.$message.error('点赞操作失败，请重试', 3);
+            }
+          })
+          .catch(error => {
+            console.error('点赞删除失败，请重试', error);
+            this.$message.error('点赞操作失败，请重试', error);
+          })
     },
-    likeReply(comment, reply) {
-      if (reply.likedByCurrentUser) {
-        reply.likes -= 1;
-        reply.likedByCurrentUser = false;
-      } else {
-        reply.likes += 1;
-        reply.likedByCurrentUser = true;
-      }
+    async likeReply(reply) {
+      const action = reply.likedByCurrentUser ? 'unlike' : 'like';
+      await instance.post('/iClub/changeReplyLike',
+          {clubId: this.basicInfo.id,
+            studentId: this.user.id,
+            replyId: reply.id,
+            action: action}
+      )
+          .then(response => {
+            const res = response.data;
+            if (res.code === 0) {
+              if (reply.likedByCurrentUser) {
+                reply.likes -= 1;
+                reply.likedByCurrentUser = false;
+              } else {
+                reply.likes += 1;
+                reply.likedByCurrentUser = true;
+              }
+            } else {
+              this.$message.error('点赞操作失败，请重试', 3);
+            }
+          })
+          .catch(error => {
+            console.error('点赞删除失败，请重试', error);
+            this.$message.error('点赞操作失败，请重试', error);
+          })
     },
     replyToComment(comment) {
       this.replyTarget = { type: 'comment', target: comment };
@@ -337,21 +329,53 @@ export default {
       this.commentPlaceholder = `@${reply.authorName}`;
     },
     // 删除评论及其回复
-    deleteComment(comment) {
-      this.error = '';
-      if (comment.authorId === this.currUser) {
-        this.comments = this.comments.filter(c => c.id !== comment.id);
+    async deleteComment(comment) {
+      if (comment.authorId === this.user.id) {
+        await instance.delete('iClub/deleteComment', {
+          data:{
+            commentId: comment.id,
+            clubId: this.basicInfo.id}
+        })
+            .then(response => {
+              const res = response.data;
+              if (res.code === 0) {
+                this.comments = this.comments.filter(c => c.id !== comment.id);
+                this.$message.success('评论已删除', 3)
+              } else {
+                this.$message.error('评论删除失败，请重试', 3);
+              }
+            })
+            .catch(error => {
+              console.error('评论删除失败，请重试', error);
+              this.$message.error('评论删除失败，服务器出错，请稍后再试', 3);
+            })
       } else {
-        this.error = '你不能删除别人的评论';
+        this.$message.error('你不能删除别人的评论', 3);
       }
     },
     // 删除回复
-    deleteReply(comment, reply) {
-      this.error = '';
-      if (reply.authorId === this.currUser) {
-        comment.replies = comment.replies.filter(r => r.id !== reply.id);
+    async deleteReply(comment, reply) {
+      if (reply.authorId === this.user.id) {
+        await instance.delete('iClub/deleteReply', {
+          data: {
+            replyId: reply.id,
+            clubId: this.basicInfo.id}
+        })
+            .then(response => {
+              const res = response.data;
+              if (res.code === 0) {
+                comment.replies = comment.replies.filter(r => r.id !== reply.id);
+                this.$message.success('回复已删除', 3)
+              } else {
+                this.$message.error('回复删除失败，请重试', 3);
+              }
+            })
+            .catch(error => {
+              console.error('回复删除失败，请重试', error);
+              this.$message.error('回复删除失败，服务器出错，请稍后再试', 3);
+            })
       } else {
-        this.error = '你不能删除别人的回复';
+        this.$message.error('你不能删除别人的回复', 3);
       }
     },
     joinSociety() {
@@ -360,62 +384,76 @@ export default {
     followSociety() {
       this.followed = !this.followed;
     },
-    postComment() {
-      if (this.replyTarget) {
-        const reply = {
-          id: Date.now().toString(),
-          authorName: this.currName,
-          authorId: this.currUser,
-          content: this.newComment,
-          date: new Date().toLocaleString(),
-          likes: 0,
-          replyName: this.replyTarget.type === 'reply' ? this.replyTarget.target.authorName : '',
-          replyId: this.replyTarget.type === 'reply'? this.replyTarget.target.authorId : ''
-        };
-        if (this.replyTarget.type === 'comment') {
-          this.replyTarget.target.replies.push(reply);
+    async post() {
+      try {
+        if (this.replyTarget) {
+          const reply = {
+            id: Date.now().toString(),
+            authorName: this.user.name,
+            authorId: this.user.id,
+            content: this.newComment,
+            date: new Date().toLocaleString(),
+            likes: 0,
+            replyName: this.replyTarget.type === 'reply' ? this.replyTarget.target.authorName : null,
+            replyId: this.replyTarget.type === 'reply'? this.replyTarget.target.id : null,
+            commentId: this.replyTarget.type === 'reply'? this.replyTarget.parent.id : this.replyTarget.target.id,
+            pictureId: this.user.pictureId,
+            likedByCurrentUser: false
+          };
+          instance.post('/iClub/postReply', reply);
+          if (this.replyTarget.type === 'comment') {
+            this.replyTarget.target.replies.push(reply);
+          } else {
+            this.replyTarget.parent.replies.push(reply);
+          }
+          this.replyTarget = null;
+          this.$message.success('发布回复成功！', 3);
         } else {
           this.replyTarget.parent.replies.push(reply);
-=======
-    async fetchComments(posts) {
-      // 遍历每个帖子，获取其评论
-      for (const post of posts) {
-        post.modifyAble = false; // 默认设置帖子的可修改性为 false
-        post.comments = []; // 初始化评论数组
+          async fetchComments(posts) {
+            // 遍历每个帖子，获取其评论
+            for (const post of posts) {
+              post.modifyAble = false; // 默认设置帖子的可修改性为 false
+              post.comments = []; // 初始化评论数组
 
-        // 仅对类型为 'comment' 的帖子获取评论
-        if (post.type === 'comment') {
-          try {
-            // 使用 axios 请求获取该帖子的评论
-            const commentsResponse = await axios.get(`http://localhost:8080/iClub/get_comments_by_post/${post.Pid}`);
-            console.log(commentsResponse); // 打印获取的评论信息
-            post.comments = commentsResponse.data.comments; // 将获取的评论存储到帖子的 comments 属性中
-          } catch (error) {
-            // 捕获并记录获取评论时的错误
-            console.error(`Error fetching comments for post ${post.Pid}:`, error);
-            post.comments = []; // 确保即使出错也能初始化 comments 数组
+              // 仅对类型为 'comment' 的帖子获取评论
+              if (post.type === 'comment') {
+                try {
+                  // 使用 axios 请求获取该帖子的评论
+                  const commentsResponse = await axios.get(`http://localhost:8080/iClub/get_comments_by_post/${post.Pid}`);
+                  console.log(commentsResponse); // 打印获取的评论信息
+                  post.comments = commentsResponse.data.comments; // 将获取的评论存储到帖子的 comments 属性中
+                } catch (error) {
+                  // 捕获并记录获取评论时的错误
+                  console.error(`Error fetching comments for post ${post.Pid}:`, error);
+                  post.comments = []; // 确保即使出错也能初始化 comments 数组
+                }
+                const newComment = {
+                  id: Date.now().toString(),
+                  authorName: this.user.name,
+                  content: this.newComment,
+                  authorId: this.user.id,
+                  date: new Date().toLocaleString(),
+                  likes: 0,
+                  showReplies: false,
+                  likedByCurrentUser: false,
+                  pictureId: this.user.pictureId,
+                  replies: []
+                };
+                instance.post('/iClub/postComment', {comment: newComment, clubId: this.basicInfo.id});
+                this.comments.push(newComment);
+                this.$message.success('发布评论成功！', 3);
+              >>>>>>> f3c891537685e0f9b9c44abe656a7e6505ee801b
+              }
+              this.newComment = '';
+              this.commentPlaceholder = '';
+            } catch (error) {
+              console.error('提交评论失败', error);
+              this.$message.error('提交失败，请稍后再试', 3);
+            }
           }
->>>>>>> Stashed changes
         }
-        this.replyTarget = null;
-      } else {
-        const newComment = {
-          id: Date.now().toString(),
-          authorName: this.currName,
-          authorId: this.currUser,
-          content: this.newComment,
-          date: new Date().toLocaleString(),
-          likes: 0,
-          replies: [],
-          showReplies: false
-        };
-        this.comments.push(newComment);
       }
-      this.newComment = '';
-      this.commentPlaceholder = '';
-    }
-  }
-}
 </script>
 
 <style lang="less" scoped>
@@ -547,7 +585,7 @@ export default {
     }
   }
 
-  .no-comments {
+  .no-comments, .no-activities {
     text-align: center; /* 使文本居中 */
     color: rgba(0, 0, 0, 0.5); /* 设置为浅色 */
     font-size: 18px; /* 调整字体大小 */
@@ -555,83 +593,3 @@ export default {
   }
 }
 </style>
-
-
-<!--<template>-->
-<!--  <div>-->
-<!--    &lt;!&ndash; 如果 myClub 数据存在，则渲染 Club 组件并传递 club 属性 &ndash;&gt;-->
-<!--    <Club v-if="myClub" :club="myClub"></Club>-->
-<!--    <p v-else>Loading...</p> &lt;!&ndash; 如果 myClub 数据还未加载，显示加载状态 &ndash;&gt;-->
-<!--  </div>-->
-<!--</template>-->
-
-<!--<script>-->
-<!--// 导入 axios 库用于发起 HTTP 请求-->
-<!--import axios from 'axios';-->
-<!--// 导入 Club 组件-->
-<!--import Club from "@/components/club/Club.vue";-->
-
-<!--export default {-->
-<!--  components: {-->
-<!--    Club, // 注册 Club 组件-->
-<!--  },-->
-<!--  data() {-->
-<!--    return {-->
-<!--      myClub: null, // 初始化 myClub 为 null，用于存储社团信息-->
-<!--    };-->
-<!--  },-->
-<!--  created() {-->
-<!--    // 组件创建时获取路由参数中的 clubId-->
-<!--    const clubId = this.$route.params.id;-->
-<!--    console.log(clubId);-->
-<!--    // 调用 fetchData 方法以获取社团的详细信息-->
-<!--    this.fetchData(clubId);-->
-<!--  },-->
-<!--  methods: {-->
-<!--    async fetchData(clubId) {-->
-<!--      try {-->
-<!--        // 使用 axios 请求获取社团详细信息-->
-<!--        const clubDetailsResponse = await axios.get(`http://localhost:8080/iClub/getClubDetails/${clubId}`);-->
-<!--        // 使用 axios 请求获取社团活动信息-->
-<!--        const activitysResponse = await axios.get(`http://localhost:8080/iClub/getActivities/${clubId}`);-->
-<!--        // 将获取的数据存储到 myClub 中-->
-<!--        this.myClub = {-->
-<!--          id: clubId,-->
-<!--          name: clubDetailsResponse.data.club.name, // 社团名称-->
-<!--          type: activitysResponse.data.type, // 社团活动类型-->
-<!--          description: clubDetailsResponse.data.description, // 社团描述-->
-<!--          posts:activitysResponse.data.posts,-->
-<!--          showAddPost: (clubDetailsResponse?.data?.club?.Cid !== -1), // 判断是否显示添加帖子按钮-->
-<!--        };-->
-
-<!--        // 调用 fetchComments 方法以获取每个帖子的评论-->
-<!--        await this.fetchComments(this.myClub.activities);-->
-<!--      } catch (error) {-->
-<!--        // 捕获并记录获取数据时的错误-->
-<!--        console.error('Error fetching data:', error);-->
-<!--      }-->
-<!--    },-->
-<!--    async fetchComments(posts) {-->
-<!--      // 遍历每个帖子，获取其评论-->
-<!--      for (const post of posts) {-->
-<!--        post.modifyAble = false; // 默认设置帖子的可修改性为 false-->
-<!--        post.comments = []; // 初始化评论数组-->
-
-<!--        // 仅对类型为 'comment' 的帖子获取评论-->
-<!--        if (post.type === 'comment') {-->
-<!--          try {-->
-<!--            // 使用 axios 请求获取该帖子的评论-->
-<!--            const commentsResponse = await axios.get(`http://127.0.0.1:8000/StudyApp/get_comments_by_post/${post.Pid}`);-->
-<!--            console.log(commentsResponse); // 打印获取的评论信息-->
-<!--            post.comments = commentsResponse.data.comments; // 将获取的评论存储到帖子的 comments 属性中-->
-<!--          } catch (error) {-->
-<!--            // 捕获并记录获取评论时的错误-->
-<!--            console.error(`Error fetching comments for post ${post.Pid}:`, error);-->
-<!--            post.comments = []; // 确保即使出错也能初始化 comments 数组-->
-<!--          }-->
-<!--        }-->
-<!--      }-->
-<!--    },-->
-<!--  },-->
-<!--};-->
-<!--</script>-->
