@@ -63,7 +63,6 @@ const options = {
           component: PageView,
           children: [
             {
-<<<<<<< Updated upstream
               path: 'clubs',
               name: '社团页',
               component: () => import('@/pages/clubs'),
@@ -80,18 +79,6 @@ const options = {
               cacheAble: true
             }
           }
-=======
-              path: 'allClub',
-              name: '所有社团',
-              component: () => import('@/pages/clubs'),
-            },
-            {
-              path: 'manage',
-              name: '管理社团',
-              component: () => import('@/pages/form/step'),
-            }
-          ]
->>>>>>> Stashed changes
         },
         {
           path: 'form',

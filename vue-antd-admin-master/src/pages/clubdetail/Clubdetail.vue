@@ -13,7 +13,6 @@
       </div>
     </div>
 
-     标签切换
     <div class="tabs">
       <button :class="{ active: activeTab === 'activities' }" @click="activeTab = 'activities'">
         社团活动
@@ -23,13 +22,8 @@
       </button>
     </div>
 
-     内容显示
     <div class="content">
       <div v-if="activeTab === 'activities'" class="activity-list">
-        <div v-if="activities.length === 0" class="no-activities">
-          这里是无人区
-        </div>
-        <div v-else>
         <a-row :gutter="16">
           <a-col :span="8" v-for="activity in activities" :key="activity.id">
             <a-card hoverable style="border-radius: 8px; overflow: hidden; transition: transform 0.3s;">
@@ -54,17 +48,11 @@
             </a-card>
           </a-col>
         </a-row>
-        </div>
       </div>
 
 
       <div v-if="activeTab === 'comments'" class="comment-list">
         <a-card :bordered="false">
-          <!-- 检查评论是否为空 -->
-          <div v-if="comments.length === 0" class="no-comments">
-            这里是无人区
-          </div>
-          <div v-else>
           <a-list itemLayout="vertical">
             <a-list-item v-for="comment in comments" :key="comment.id">
 
@@ -131,7 +119,6 @@
 
             </a-list-item>
           </a-list>
-          </div>
 
           <div class="comment-box">
             <a-input
@@ -140,6 +127,13 @@
                 @pressEnter="post"
                 style="width: 100%; max-width: 600px;"
             />
+            <a-button
+                type="primary"
+                @click="post"
+                style="margin-left: 8px;"
+            >
+              发布
+            </a-button>
           </div>
 
         </a-card>
@@ -348,6 +342,9 @@ export default {
             console.error('回复删除失败，请重试', error);
             this.$message.error('回复删除失败，服务器出错，请稍后再试', 3);
           })
+      if (comment.replies.length === 0) {
+        comment.showReplies = false;
+      }
     },
     joinSociety() {
       this.joined = !this.joined;
