@@ -63,23 +63,13 @@ const options = {
           component: PageView,
           children: [
             {
+<<<<<<< Updated upstream
               path: 'clubs',
               name: '社团页',
               component: () => import('@/pages/clubs'),
             }
           ]
         },
-        // {
-        //   path: 'clubs',
-        //   name: '社团页',
-        //   meta: {
-        //     icon: 'appstore-o',
-        //     page: {
-        //       cacheAble: false
-        //     }
-        //   },
-        //   component: () => import('@/pages/clubs'),
-        // },
         {
           path: '/clubdetail/:id',
           name: '社团信息',
@@ -90,6 +80,18 @@ const options = {
               cacheAble: true
             }
           }
+=======
+              path: 'allClub',
+              name: '所有社团',
+              component: () => import('@/pages/clubs'),
+            },
+            {
+              path: 'manage',
+              name: '管理社团',
+              component: () => import('@/pages/form/step'),
+            }
+          ]
+>>>>>>> Stashed changes
         },
         {
           path: 'form',
@@ -104,12 +106,12 @@ const options = {
           children: [
             {
               path: 'basic',
-              name: '基础表单',
+              name: '活动申请',
               component: () => import('@/pages/form/basic'),
             },
             {
               path: 'step',
-              name: '分步表单',
+              name: '社团报名',
               component: () => import('@/pages/form/step'),
             },
             {

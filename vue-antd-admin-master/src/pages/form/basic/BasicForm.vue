@@ -2,75 +2,70 @@
   <a-card :body-style="{padding: '24px 32px'}" :bordered="false">
     <a-form>
       <a-form-item
-        :label="$t('title')"
-        :labelCol="{span: 7}"
-        :wrapperCol="{span: 10}"
+          :label="$t('title')"
+          :labelCol="{span: 7}"
+          :wrapperCol="{span: 10}"
       >
         <a-input :placeholder="$t('titleInput')" />
       </a-form-item>
       <a-form-item
-        :label="$t('date')"
-        :labelCol="{span: 7}"
-        :wrapperCol="{span: 10}"
+          :label="$t('date')"
+          :labelCol="{span: 7}"
+          :wrapperCol="{span: 10}"
       >
         <a-range-picker style="width: 100%" />
       </a-form-item>
       <a-form-item
-        :label="$t('describe')"
-        :labelCol="{span: 7}"
-        :wrapperCol="{span: 10}"
+          :label="$t('describe')"
+          :labelCol="{span: 7}"
+          :wrapperCol="{span: 10}"
       >
         <a-textarea rows="4" :placeholder="$t('describeInput')"/>
       </a-form-item>
       <a-form-item
-        :label="$t('metrics')"
-        :labelCol="{span: 7}"
-        :wrapperCol="{span: 10}"
+          :label="$t('metrics')"
+          :labelCol="{span: 7}"
+          :wrapperCol="{span: 10}"
       >
         <a-textarea rows="4" :placeholder="$t('metricsInput')"/>
       </a-form-item>
       <a-form-item
-        :label="$t('customer')"
-        :labelCol="{span: 7}"
-        :wrapperCol="{span: 10}"
-        :required="false"
+          :label="$t('customer')"
+          :labelCol="{span: 7}"
+          :wrapperCol="{span: 10}"
+          :required="false"
       >
         <a-input :placeholder="$t('customerInput')"/>
       </a-form-item>
       <a-form-item
-        :label="$t('critics')"
-        :labelCol="{span: 7}"
-        :wrapperCol="{span: 10}"
-        :required="false"
+          :label="$t('critics')"
+          :labelCol="{span: 7}"
+          :wrapperCol="{span: 10}"
+          :required="false"
       >
         <a-input :placeholder="$t('criticsInput')"/>
       </a-form-item>
       <a-form-item
-        :label="$t('weight')"
-        :labelCol="{span: 7}"
-        :wrapperCol="{span: 10}"
-        :required="false"
+          :label="$t('signupTime')"
+          :labelCol="{span: 7}"
+          :wrapperCol="{span: 10}"
       >
-        <a-input-number :min="0" :max="100"/>
-        <span>%</span>
+        <a-range-picker style="width: 100%" />
       </a-form-item>
       <a-form-item
-        :label="$t('disclosure')"
-        :labelCol="{span: 7}"
-        :wrapperCol="{span: 10}"
-        :required="false"
-        :help="$t('disclosureDesc')"
+          :label="$t('uploadImage')"
+          :labelCol="{span: 7}"
+          :wrapperCol="{span: 10}"
       >
-        <a-radio-group v-model="value">
-          <a-radio :value="1">{{$t('public')}}</a-radio>
-          <a-radio :value="2">{{$t('partially')}}</a-radio>
-          <a-radio :value="3">{{$t('private')}}</a-radio>
-        </a-radio-group>
-        <a-select mode="multiple" v-if="value === 2">
-          <a-select-option value="4">{{$t('colleague1')}}</a-select-option>
-          <a-select-option value="5">{{$t('colleague2')}}</a-select-option>
-          <a-select-option value="6">{{$t('colleague3')}}</a-select-option>
-        </a-select>
+        <a-upload
+            action="/upload"
+            list-type="picture"
+            :show-upload-list="true"
+        >
+          <a-button>
+            <a-icon type="upload" /> {{$t('upload')}}
+          </a-button>
+        </a-upload>
       </a-form-item>
       <a-form-item style="margin-top: 24px" :wrapperCol="{span: 10, offset: 7}">
         <a-button type="primary">{{$t('submit')}}</a-button>
@@ -82,7 +77,7 @@
 
 <script>
 export default {
-  name: 'BasicForm',
+  name: 'ActivityForm',
   i18n: require('./i18n'),
   data () {
     return {
