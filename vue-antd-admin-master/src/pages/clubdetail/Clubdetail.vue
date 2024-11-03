@@ -347,12 +347,35 @@ export default {
       }
     },
     joinSociety() {
-      this.joined = !this.joined;
+      if (!this.joined) {
+        this.$router.push({path: `/enroll`, query: {basicInfo: JSON.stringify(this.basicInfo)}});
+      }
     },
-    followSociety() {
-      this.followed = !this.followed;
+    async followSociety() {
+      const action = this.followed ? 'unfollow' : 'follow';
+      await instance.post('iClub/changeFollow',
+          {clubId: this.basicInfo.id,
+        studentId: this.user.id,
+        action: action})
+          .then(response => {
+            if (response.data.code === 0) {
+              this.followed = !this.followed;
+              const message = this.followed ? '已关注该社团！' : '已取消关注该社团';
+              this.$message.success(message);
+            } else {
+              this.$message.error('操作失败，请重试');
+            }
+          })
+          .catch(error => {
+            console.error('关注或取关社团时出错',error);
+            this.$message.error('服务器出错，请稍后再试');
+          })
     },
     async post() {
+      if (this.newComment === '' || this.newComment === null) {
+        this.$message.error('发布内容不能为空！', 3);
+        return;
+      }
       try {
         if (this.replyTarget) {
           const reply = {

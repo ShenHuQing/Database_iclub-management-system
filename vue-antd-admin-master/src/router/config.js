@@ -81,6 +81,17 @@ const options = {
           }
         },
         {
+          path: '/enroll',
+          name: '报名表单',
+          component: () => import('@/pages/enroll/Enroll'),
+          meta: {
+            invisible: true, // 添加此属性
+            page: {
+              cacheAble: true
+            }
+          }
+        },
+        {
           path: 'form',
           name: '表单页',
           meta: {
