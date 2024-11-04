@@ -20,6 +20,10 @@
       <button :class="{ active: activeTab === 'comments' }" @click="activeTab = 'comments'">
         评论区
       </button>
+      <button v-if="(this.roles === 'staff' || this.roles === 'admin') && this.joined"
+              :class="{ active: activeTab === 'information' }" @click="activeTab = 'information'">
+        学生信息
+      </button>
     </div>
 
     <div class="content">
@@ -138,6 +142,20 @@
 
         </a-card>
       </div>
+
+      <div v-if="activeTab === 'information'" class="information-list">
+        <a-card :bordered="false">
+          <a-table
+              row-key="id"
+              style="margin-bottom: 24px"
+              :columns="studentColumns"
+              :dataSource="studentData"
+              :pagination="false"
+          >
+          </a-table>
+        </a-card>
+      </div>
+
     </div>
   </div>
 </template>
@@ -150,6 +168,29 @@ const instance = axios.create({
   baseURL: 'http://localhost:8080',  // 后端地址
   withCredentials: true,
 });
+
+const studentColumns = [
+  {
+    title: '学号',
+    dataIndex: 'id',
+    key: 'id'
+  },
+  {
+    title: '姓名',
+    dataIndex: 'name',
+    key: 'name'
+  },
+  {
+    title: '专业',
+    dataIndex: 'major',
+    key: 'major'
+  },
+  {
+    title: '角色',
+    dataIndex: 'roles',
+    key: 'roles'
+  }
+]
 
 export default {
   name: "ClubDetail",
@@ -212,6 +253,15 @@ export default {
       followed: false,
       activeTab: "activities",
       loading: false,
+      studentColumns,
+      studentData: [
+        {
+          id: '',
+          name: '',
+          major: '',
+          roles: ''
+        }
+      ]
     };
   },
   mounted() {
@@ -224,14 +274,26 @@ export default {
       try {
         const clubDetailResponse = await instance.get(`/iClub/getClubDetails/${clubId}`);
         this.basicInfo = clubDetailResponse.data.data;
-        console.log(this.basicInfo.pictureId);
+
         const commentsResponse = await instance.post(`/iClub/getComments`, {studentId: this.user.id, clubId: this.basicInfo.id});
         this.comments = commentsResponse.data.data;
-        const joinedResponse = await instance.post(`/iClub/getJoined`, {studentId: this.user.id, clubId: this.basicInfo.id});
-        this.joined = !joinedResponse.data.code(); //0已经加入，其他代表没有
-        const followedResponse = await instance.post(`/iClub/getFollowed`, {studentId: this.user.id, clubId: this.basicInfo.id});
-        this.followed = !followedResponse.data.code(); ////0已经关注，其他代表没有
-        // this.activities = response.data.data.activities;
+
+        const followedResponse = await instance.post(`/iClub/getFollow`, {studentId: this.user.id, clubId: this.basicInfo.id});
+        this.followed = !followedResponse.data.code; ////0已经关注，其他代表没有
+        console.log("是否关注社团：" + this.followed);
+
+        const joinedResponse = await instance.post(`/iClub/getJoin`, {studentId: this.user.id, clubId: this.basicInfo.id});
+        this.joined = !joinedResponse.data.code; //0已经加入，其他代表没有
+
+        const memberResponse = await instance.post(`/iClub/getMembers`, {clubId: this.basicInfo.id});
+        this.studentData = memberResponse.data.data.map(member => {
+          return {
+            id: member.id,
+            name: member.name,
+            major: member.major,
+            roles: member.isStaff === 0 ? '成员' : '负责人'
+          };
+        });
       } catch (error) {
         console.error('获取社团详情信息时出错:', error);
       } finally {

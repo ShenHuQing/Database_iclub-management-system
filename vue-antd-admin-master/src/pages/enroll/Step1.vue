@@ -13,7 +13,7 @@
           :labelCol="{span: 7}"
           :wrapperCol="{span: 17}"
       >
-        <a-input v-model="formData.id" placeholder="请输入学号" />
+        <span>{{formData.id}}</span>
       </a-form-item>
       <a-form-item
           :label="$t('name')"

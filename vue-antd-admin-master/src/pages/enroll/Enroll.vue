@@ -17,6 +17,7 @@
 import Step1 from './Step1'
 import Step2 from './Step2'
 import Step3 from './Step3'
+import {mapGetters} from "vuex";
 
 export default {
   name: 'StepForm',
@@ -38,9 +39,11 @@ export default {
   mounted() {
     this.formData.clubName = this.$route.query.clubName;
     this.formData.clubId = this.$route.query.clubId;
+    this.formData.id = this.user.id;
     console.log(this.formData.clubName);
   },
   computed: {
+    ...mapGetters('account', ['user','roles']),
     desc() {
       return this.$t('pageDesc')
     }

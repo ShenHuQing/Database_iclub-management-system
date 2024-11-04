@@ -86,7 +86,7 @@ export default {
         try {
           await instance.post('/iClub/auditEnroll', {
             staffId: this.user.id,
-            enrollId: this.enroll.id,
+            enrollId: id,
             action: 'pass'
           })
           this.enroll = this.enroll.filter(enrollment => enrollment.id !== id);
@@ -102,7 +102,7 @@ export default {
         try {
           await instance.post('/iClub/auditEnroll', {
             staffId: this.user.id,
-            enrollId: this.enroll.id,
+            enrollId: id,
             action: 'refuse'
           })
           this.enroll = this.enroll.filter(enrollment => enrollment.id !== id);
