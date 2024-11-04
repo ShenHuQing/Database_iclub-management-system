@@ -27,6 +27,7 @@ export default {
       current: 0,
       formData: {
         clubName: '',
+        clubId: '',
         id: '',
         name: '',
         college: '',
@@ -36,6 +37,7 @@ export default {
   },
   mounted() {
     this.formData.clubName = this.$route.query.clubName;
+    this.formData.clubId = this.$route.query.clubId;
     console.log(this.formData.clubName);
   },
   computed: {

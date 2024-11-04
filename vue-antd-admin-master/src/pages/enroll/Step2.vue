@@ -54,6 +54,13 @@
 </template>
 
 <script>
+import axios from "axios";
+
+const instance = axios.create({
+  baseURL: 'http://localhost:8080',  // 后端地址
+  withCredentials: true,
+});
+
 export default {
   name: 'Step2',
   i18n: require('./i18n'),
@@ -69,12 +76,33 @@ export default {
     }
   },
   methods: {
-    nextStep () {
+    async nextStep () {
       let _this = this
       _this.loading = true
-      setTimeout(function () {
-        _this.$emit('nextStep')
-      }, 1500)
+      await instance.post('/iClub/enroll',
+          {
+            id: Date.now().toString(),
+            clubId: this.formData.clubId,
+            studentId: this.formData.id,
+            description: this.formData.description,
+            create_time: new Date().toLocaleString()
+          }
+      )
+          .then(response => {
+            const res = response.data;
+            if (res.code === 0) {
+              _this.$emit('nextStep');
+            } else {
+              this.$message.error('报名失败，请重试', 3);
+            }
+          })
+          .catch(error => {
+            console.error('报名失败，请重试', error);
+            this.$message.error('报名失败，请重试', error);
+          })
+      // setTimeout(function () {
+      //   _this.$emit('nextStep')
+      // }, 1500)
     },
     prevStep () {
       this.$emit('prevStep')

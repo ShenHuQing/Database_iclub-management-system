@@ -1,7 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-//import Profile from '@/pages/profile/Profile.vue'
-// import myPersonInformation from '@/pages/myPersonInformation/profile.vue'
 import {formatRoutes} from '@/utils/routerUtil'
 
 Vue.use(Router)
@@ -31,14 +29,3 @@ function initRouter(isAsync) {
   return new Router(options)
 }
 export {loginIgnore, initRouter}
-
-// export default new Router({
-//   mode: 'history',
-//   routes: [
-//     {
-//       path: '/profile',
-//       name: 'profile',
-//       component: myPersonInformation
-//     }
-//   ]
-// });

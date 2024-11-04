@@ -128,6 +128,11 @@ const options = {
           component: PageView,
           children: [
             {
+              path: 'approval',
+              name: '审批列表',
+              component: () => import('@/pages/approval/Approval'),
+            },
+            {
               path: 'query',
               name: '查询表格',
               meta: {

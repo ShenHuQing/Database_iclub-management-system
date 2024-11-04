@@ -5,9 +5,9 @@
     </div>
     <div class="title" v-if="title">{{title}}</div>
     <div class="desc" v-if="description">{{description}}</div>
-    <div class="content">
-      <slot></slot>
-    </div>
+<!--    <div class="content">-->
+<!--      <slot></slot>-->
+<!--    </div>-->
     <div class="action">
       <slot name="action"></slot>
     </div>

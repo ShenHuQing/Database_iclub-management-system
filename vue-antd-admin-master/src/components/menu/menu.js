@@ -35,6 +35,7 @@ import Menu from 'ant-design-vue/es/menu'
 import Icon from 'ant-design-vue/es/icon'
 import fastEqual from 'fast-deep-equal'
 import {getI18nKey} from '@/utils/routerUtil'
+import {mapGetters} from "vuex";
 
 const {Item, SubMenu} = Menu
 
@@ -91,6 +92,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters('account', ['user','roles']),
     menuTheme() {
       return this.theme == 'light' ? this.theme : 'dark'
     },
@@ -190,8 +192,13 @@ export default {
       )
     },
     renderItem: function (h, menu) {
-      const meta = menu.meta
+      const meta = menu.meta;
       if (!meta || !meta.invisible) {
+        // 角色判断逻辑
+        if (menu.path === 'approval' && !(this.roles === 'staff' || this.roles === 'admin')) {
+          return null; // 如果不是 admin 或 staff，则不渲染该菜单项
+        }
+
         let renderChildren = false
         const children = menu.children
         if (children != undefined) {

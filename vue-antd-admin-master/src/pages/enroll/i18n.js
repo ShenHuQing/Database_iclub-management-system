@@ -24,7 +24,7 @@ module.exports = {
             nextStep: '下一步',
             preStep: '上一步',
             submit: '提交',
-            note: '确认选择后，无法再进行修改',
+            note: '提交后，无法再进行修改',
             success: '报名成功',
             doAgain: '再转一笔',
             bill: '查看报名结果'

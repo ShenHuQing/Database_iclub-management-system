@@ -6,7 +6,7 @@
     :selectedKeys="selectedKeys"
     @click="handleClick"
   >
-    <a-menu-item :key="item.key" v-for="item in itemList">
+    <a-menu-item :key="item.key" v-for="item in itemList" >
       <a-icon v-if="item.icon" :type="item.icon" />
       <span>{{ item.text }}</span>
     </a-menu-item>
@@ -14,6 +14,8 @@
 </template>
 
 <script>
+import {mapGetters} from "vuex";
+
 export default {
   name: 'Contextmenu',
   props: {
@@ -38,12 +40,21 @@ export default {
     }
   },
   computed: {
+    ...mapGetters('account', ['user','roles']),
     style () {
       return {
         left: this.left + 'px',
         top: this.top + 'px'
       }
-    }
+    },
+    // filteredItemList() {
+    //   return this.itemList.filter(item => {
+    //     if (item.key === 'approval' && !this.roles.some(role => ['admin', 'staff'].includes(role))) {
+    //       return false;
+    //     }
+    //     return true;
+    //   })
+    // }
   },
   created () {
     window.addEventListener('click', this.closeMenu)

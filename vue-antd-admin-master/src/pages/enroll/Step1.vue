@@ -38,7 +38,7 @@
             v-model="formData.description"
             placeholder="请输入个人描述，不超过300个字"
             :rows="4"
-            maxlength="300"
+            max-Length="300"
         />
       </a-form-item>
       <a-form-item :wrapperCol="{span: 17, offset: 7}">
