@@ -11,7 +11,7 @@
           :labelCol="{span: 7}"
           :wrapperCol="{span: 17}"
       >
-        <span>{{formData.basicClubInfo.name}}</span>
+        <span>{{formData.clubName}}</span>
       </a-form-item>
       <a-form-item
           :label="$t('id')"
@@ -38,28 +38,12 @@
         <span>{{formData.college}}</span>
       </a-form-item>
       <a-form-item
-          :label="$t('第一志愿')"
+          label="个人描述"
           :labelCol="{span: 7}"
           :wrapperCol="{span: 17}"
           class="stepFormText"
       >
-        <span>{{formData.choose1Name}}</span>
-      </a-form-item>
-      <a-form-item
-          :label="$t('第二志愿')"
-          :labelCol="{span: 7}"
-          :wrapperCol="{span: 17}"
-          class="stepFormText"
-      >
-        <span>{{formData.choose2Name}}</span>
-      </a-form-item>
-      <a-form-item
-          :label="$t('第三志愿')"
-          :labelCol="{span: 7}"
-          :wrapperCol="{span: 17}"
-          class="stepFormText"
-      >
-        <span>{{formData.choose3Name}}</span>
+        <span>{{formData.description}}</span>
       </a-form-item>
       <a-form-item :wrapperCol="{span: 17, offset: 7}">
         <a-button :loading="loading" type="primary" @click="nextStep">{{$t('submit')}}</a-button>

@@ -26,28 +26,17 @@ export default {
     return {
       current: 0,
       formData: {
-        basicClubInfo: {
-          id: '',
-          name: '',
-          type: '',
-          description: '',
-          pictureId: '', // 社团图片 URL
-        },
+        clubName: '',
         id: '',
         name: '',
         college: '',
-        choose1: '',
-        choose2: '',
-        choose3: '',
-        choose1Name: '',
-        choose2Name: '',
-        choose3Name: '',
+        description: '',
       }
     }
   },
   mounted() {
-    this.formData.basicClubInfo = JSON.parse(this.$route.query.basicInfo);
-    console.log(this.formData.basicClubInfo);
+    this.formData.clubName = this.$route.query.clubName;
+    console.log(this.formData.clubName);
   },
   computed: {
     desc() {

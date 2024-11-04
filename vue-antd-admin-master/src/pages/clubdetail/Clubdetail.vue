@@ -348,7 +348,7 @@ export default {
     },
     joinSociety() {
       if (!this.joined) {
-        this.$router.push({path: `/enroll`, query: {basicInfo: JSON.stringify(this.basicInfo)}});
+        this.$router.push({path: `/enroll`, query: {clubName: this.basicInfo.name}});
       }
     },
     async followSociety() {
