@@ -36,12 +36,17 @@ const studentColumns = [
   }
 ]
 
+const instance = axios.create({
+  baseURL: 'http://localhost:8080',  // 后端地址
+  withCredentials: true,
+});
+
 export default {
   name: 'StudentDetail',
   components: { PageLayout },
   data () {
     return {
-      clubId: 'your-club-id', // 替换为你实际的 clubId
+      clubId: '1', // 替换为你实际的 clubId
       studentColumns,
       studentData: [] // 初始化为空数组
     }
@@ -52,10 +57,8 @@ export default {
   methods: {
     async fetchStudentData() {
       try {
-        const response = await axios.get('/iClub/getMembers', {
-          params: {
-            clubId: this.clubId // 传递 clubId 作为查询参数
-          }
+        const response = instance.post('/iClub/getMembers', {
+          clubId: this.clubId // 传递 clubId 作为查询参数
         })
         this.studentData = response.data // 假设后端返回的数据格式正确
       } catch (error) {

@@ -228,9 +228,9 @@ export default {
         const commentsResponse = await instance.post(`/iClub/getComments`, {studentId: this.user.id, clubId: this.basicInfo.id});
         this.comments = commentsResponse.data.data;
         const joinedResponse = await instance.post(`/iClub/getJoined`, {studentId: this.user.id, clubId: this.basicInfo.id});
-        this.joined = !joinedResponse.data.code(); //0已经加入，其他代表没有
+        this.joined = joinedResponse.data.code === 0; //0已经加入，其他代表没有
         const followedResponse = await instance.post(`/iClub/getFollowed`, {studentId: this.user.id, clubId: this.basicInfo.id});
-        this.followed = !followedResponse.data.code(); ////0已经关注，其他代表没有
+        this.followed = followedResponse.data.code === 0; ////0已经关注，其他代表没有
         // this.activities = response.data.data.activities;
       } catch (error) {
         console.error('获取社团详情信息时出错:', error);
