@@ -20,7 +20,7 @@
       <button :class="{ active: activeTab === 'comments' }" @click="activeTab = 'comments'">
         评论区
       </button>
-      <button v-if="(this.roles === 'staff' || this.roles === 'admin') && this.joined"
+      <button v-if="this.isStaff"
               :class="{ active: activeTab === 'information' }" @click="activeTab = 'information'">
         学生信息
       </button>
@@ -249,6 +249,7 @@ export default {
       newComment:'',
       commentPlaceholder: '',
       replyTarget: null,
+      isStaff: false,
       joined: false,
       followed: false,
       activeTab: "activities",
@@ -284,6 +285,9 @@ export default {
 
         const joinedResponse = await instance.post(`/iClub/getJoin`, {studentId: this.user.id, clubId: this.basicInfo.id});
         this.joined = !joinedResponse.data.code; //0已经加入，其他代表没有
+
+        const isStaffResponse = await instance.post(`/iClub/isStaff`, {studentId: this.user.id, clubId: this.basicInfo.id});
+        this.isStaff = isStaffResponse.data.data; //0已经加入，其他代表没有
 
         const memberResponse = await instance.post(`/iClub/getMembers`, {clubId: this.basicInfo.id});
         this.studentData = memberResponse.data.data.map(member => {

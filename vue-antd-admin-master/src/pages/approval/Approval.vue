@@ -4,7 +4,7 @@
         style="margin-top: 20px"
         :bordered="false"
     >
-      <a-list size="large">
+      <a-list v-if="this.roles === 'staff'" size="large">
         <a-list-item v-for="item in enroll" :key="item.id">
           <a-list-item-meta
               :title="item.studentName"
@@ -28,6 +28,34 @@
 <!--            <div class="list-content-item">-->
 <!--              <a-progress :percent="item.approvalStatus ? 100 : 0" style="width: 180px" />-->
 <!--            </div>-->
+          </div>
+        </a-list-item>
+      </a-list>
+
+      <a-list v-if="this.roles === 'admin'" size="large">
+        <a-list-item v-for="item in activity" :key="item.id">
+          <a-list-item-meta
+              :title="item.studentName"
+              :description="item.description"
+          >
+            <a slot="title">AliPay</a>
+          </a-list-item-meta>
+          <div slot="actions">
+            <a @click="approve(item.id)" style="margin-right: 8px;">批准</a>
+            <a @click="reject(item.id)">拒绝</a>
+          </div>
+          <div class="list-content">
+            <div class="list-content-item">
+              <span>社团</span>
+              <p>{{item.clubName}}</p>
+            </div>
+            <div class="list-content-item">
+              <span>报名时间</span>
+              <p>{{item.create_time}}</p>
+            </div>
+            <!--            <div class="list-content-item">-->
+            <!--              <a-progress :percent="item.approvalStatus ? 100 : 0" style="width: 180px" />-->
+            <!--            </div>-->
           </div>
         </a-list-item>
       </a-list>
@@ -60,6 +88,19 @@ export default {
           clubName: '凌峰社',
           description: '我很棒',
           create_time: '2024-11-4'
+        }
+      ],
+      activity: [
+        {
+          id: '',
+          time: '',
+          club_name: '',
+          title: '',
+          content: '',
+          start_time: '',
+          end_time: '',
+          venue: '',
+          picture_id: ''
         }
       ],
       loading: false

@@ -103,8 +103,13 @@ const options = {
           component: PageView,
           children: [
             {
-              path: 'basic',
+              path: 'apply',
               name: '活动申请',
+              component: () => import('@/pages/form/apply'),
+            },
+            {
+              path: 'basic',
+              name: '基础表单',
               component: () => import('@/pages/form/basic'),
             },
             {
