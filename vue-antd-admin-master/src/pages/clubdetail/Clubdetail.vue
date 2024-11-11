@@ -20,7 +20,7 @@
       <button :class="{ active: activeTab === 'comments' }" @click="activeTab = 'comments'">
         评论区
       </button>
-      <button v-if="(this.roles === 'staff' || this.roles === 'admin') && this.joined"
+      <button v-if="this.isStaff"
               :class="{ active: activeTab === 'information' }" @click="activeTab = 'information'">
         学生信息
       </button>
@@ -30,9 +30,14 @@
       <div v-if="activeTab === 'activities'" class="activity-list">
         <a-row :gutter="16">
           <a-col :span="8" v-for="activity in activities" :key="activity.id">
-            <a-card hoverable style="border-radius: 8px; overflow: hidden; transition: transform 0.3s;">
+            <a-card
+                hoverable
+                style="border-radius: 8px; overflow: hidden; transition: transform 0.3s;"
+                @click="goToActivityDetail(activity.id)"
+                v-if="this.joined || this.followed"
+            >
               <img
-                  :src="activity.pictureId"
+                  :src="activity.picture_id"
                   height="200"
                   style="border-top-left-radius: 8px; border-top-right-radius: 8px; object-fit: cover; width: 100%;"
               />
@@ -41,7 +46,7 @@
 <!--                           />-->
               <div style="padding: 16px;">
                 <div class="activity-info">
-                  <h3 class="activity-title">{{ activity.name }}</h3>
+                  <h3 class="activity-title">{{ activity.title }}</h3>
                   <p class="activity-time" style="font-weight: bold; color: #999;">
                     {{ activity.start_time }} - {{ activity.end_time }}
                   </p>
@@ -209,12 +214,12 @@ export default {
       activities: [
         {
           id: 1,
-          name: '编程马拉松',
+          title: '编程马拉松',
           content: '不理解是干啥的',
           start_time: '2023-05-15 16:00',
           end_time: '2023-05-15 17:00',
           venue: '地点',
-          pictureId: require('../../assets/img/preview.png'),
+          picture_id: require('../../assets/img/preview.png'),
         }
       ],
       // comments: [],
@@ -249,6 +254,7 @@ export default {
       newComment:'',
       commentPlaceholder: '',
       replyTarget: null,
+      isStaff: false,
       joined: false,
       followed: false,
       activeTab: "activities",
@@ -280,10 +286,12 @@ export default {
 
         const followedResponse = await instance.post(`/iClub/getFollow`, {studentId: this.user.id, clubId: this.basicInfo.id});
         this.followed = !followedResponse.data.code; ////0已经关注，其他代表没有
-        console.log("是否关注社团：" + this.followed);
 
         const joinedResponse = await instance.post(`/iClub/getJoin`, {studentId: this.user.id, clubId: this.basicInfo.id});
         this.joined = !joinedResponse.data.code; //0已经加入，其他代表没有
+
+        const isStaffResponse = await instance.post(`/iClub/isStaff`, {studentId: this.user.id, clubId: this.basicInfo.id});
+        this.isStaff = isStaffResponse.data.code === 0; //0代表是负责人，-1代表不是
 
         const memberResponse = await instance.post(`/iClub/getMembers`, {clubId: this.basicInfo.id});
         this.studentData = memberResponse.data.data.map(member => {
@@ -294,10 +302,21 @@ export default {
             roles: member.isStaff === 0 ? '成员' : '负责人'
           };
         });
+
+        const activitiesResponse = await instance.post(`/iClub/getActivities`, {clubName: this.basicInfo.name});
+        this.activities = activitiesResponse.data.data;
       } catch (error) {
         console.error('获取社团详情信息时出错:', error);
       } finally {
         this.loading = false;
+      }
+    },
+    goToActivityDetail(id) {
+      this.$router.push({path: '', query: {activityId: id}});
+    },
+    joinSociety() {
+      if (!this.joined) {
+        this.$router.push({path: `/enroll`, query: {clubName: this.basicInfo.name, clubId: this.basicInfo.id}});
       }
     },
     toggleReplies(comment) {
@@ -410,11 +429,6 @@ export default {
           })
       if (comment.replies.length === 0) {
         comment.showReplies = false;
-      }
-    },
-    joinSociety() {
-      if (!this.joined) {
-        this.$router.push({path: `/enroll`, query: {clubName: this.basicInfo.name, clubId: this.basicInfo.id}});
       }
     },
     async followSociety() {
