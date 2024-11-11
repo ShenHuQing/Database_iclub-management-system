@@ -34,7 +34,6 @@
                 hoverable
                 style="border-radius: 8px; overflow: hidden; transition: transform 0.3s;"
                 @click="goToActivityDetail(activity.id)"
-                v-if="joined || followed"
             >
               <img
                   :src="activity.picture_id"
@@ -315,7 +314,11 @@ export default {
       }
     },
     goToActivityDetail(id) {
-      this.$router.push({path: '/activitydetail', query: {activityId: id}});
+      if (this.joined || this.followed) {
+        this.$router.push({path: '/activitydetail', query: {activityId: id}});
+      } else {
+        this.$message.error('请先加入或关注该社团以查看活动详情', 3);
+      }
     },
     joinSociety() {
       if (!this.joined) {
