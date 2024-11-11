@@ -203,7 +203,7 @@ const options = {
             },
             {
               path: 'advance',
-              name: '高级详情页',
+              name: '活动详情',
               component: () => import('@/pages/detail/AdvancedDetail')
             }
           ]
@@ -292,7 +292,7 @@ const options = {
         {
           path: '/profile',
           name: '个人中心',
-          component: () => import('../pages/profile'),
+          component: () => import('../pages/profile/Profile'),
           meta: {
             invisible: true,
             page: {

@@ -104,7 +104,7 @@ const routerMap = {
   },
   advanceDetails: {
     path: 'advance',
-    name: '高级详情页',
+    name: '活动详情',
     component: () => import('@/pages/detail/AdvancedDetail')
   },
   result: {
