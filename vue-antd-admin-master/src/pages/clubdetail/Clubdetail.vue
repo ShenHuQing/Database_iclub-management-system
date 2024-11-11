@@ -530,7 +530,7 @@ export default {
 }
 
 .club-image {
-  width: 150px;
+  width: 200px;
   height: 150px;
   border-radius: 10px;
   margin-right: 20px;
