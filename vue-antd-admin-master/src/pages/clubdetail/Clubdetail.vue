@@ -34,7 +34,7 @@
                 hoverable
                 style="border-radius: 8px; overflow: hidden; transition: transform 0.3s;"
                 @click="goToActivityDetail(activity.id)"
-                v-if="this.joined || this.followed"
+                v-if="joined || followed"
             >
               <img
                   :src="activity.picture_id"
@@ -214,12 +214,15 @@ export default {
       activities: [
         {
           id: 1,
+          time:'',
+          club_name:'',
           title: '编程马拉松',
           content: '不理解是干啥的',
           start_time: '2023-05-15 16:00',
           end_time: '2023-05-15 17:00',
           venue: '地点',
           picture_id: require('../../assets/img/preview.png'),
+          is_passed: 0
         }
       ],
       // comments: [],
