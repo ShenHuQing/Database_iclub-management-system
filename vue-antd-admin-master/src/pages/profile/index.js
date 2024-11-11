@@ -1,2 +1,2 @@
-import profile from './profile.vue'
+import profile from './Profile.vue'
 export default profile
