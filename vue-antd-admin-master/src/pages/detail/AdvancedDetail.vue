@@ -26,8 +26,8 @@
 
     <template slot="action">
       <a-button-group style="margin-right: 8px;">
-        <a-button type="primary" @click="handleSignUp">报名</a-button>
-        <a-button type="primary" @click="handleCheckIn">签到</a-button>
+        <a-button type="primary" @click="handleSignUp" :disabled="isAlreadyRegistered">报名</a-button>
+        <a-button type="primary" @click="handleCheckIn" :disabled="isAlreadyCheckedIn">签到</a-button>
       </a-button-group>
     </template>
 
@@ -101,7 +101,15 @@ export default {
     }
   },
   computed: {
-    ...mapState('setting', ['isMobile'])
+    ...mapState('setting', ['isMobile']),
+    // 检查是否已经报名
+    isAlreadyRegistered() {
+      return this.registrationData.some(item => item.status === '已报名');
+    },
+    // 检查是否已经签到
+    isAlreadyCheckedIn() {
+      return this.participationData.some(item => item.status === '已签到');
+    }
   },
   mounted() {
     this.fetchActivityDetails();
@@ -131,13 +139,25 @@ export default {
           });
     },
     handleSignUp() {
+      // 防止重复报名
+      if (this.isAlreadyRegistered) {
+        this.$message.warning('您已经报名过了!');
+        return;
+      }
       const newStudent = { key: this.registrationData.length + 1, name: '新学生', status: '已报名' };
       this.registrationData.push(newStudent);
     },
+
     handleCheckIn() {
+      // 防止重复签到
+      if (this.isAlreadyCheckedIn) {
+        this.$message.warning('您已经签到过了!');
+        return;
+      }
       const newParticipant = { key: this.participationData.length + 1, name: '新学生', status: '已签到' };
       this.participationData.push(newParticipant);
     }
+
   }
 }
 </script>
