@@ -81,6 +81,17 @@ const options = {
           }
         },
         {
+          path: '/activitydetail',
+          name: '活动详情',
+          component: () => import('@/pages/detail/AdvancedDetail'),
+          meta: {
+            invisible: true, // 添加此属性
+            page: {
+              cacheAble: true
+            }
+          }
+        },
+        {
           path: '/enroll',
           name: '报名表单',
           component: () => import('@/pages/enroll/Enroll'),

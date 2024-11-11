@@ -312,7 +312,7 @@ export default {
       }
     },
     goToActivityDetail(id) {
-      this.$router.push({path: '', query: {activityId: id}});
+      this.$router.push({path: '/activitydetail', query: {activityId: id}});
     },
     joinSociety() {
       if (!this.joined) {
