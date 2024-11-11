@@ -34,7 +34,7 @@
                 hoverable
                 style="border-radius: 8px; overflow: hidden; transition: transform 0.3s;"
                 @click="goToActivityDetail(activity.id)"
-                v-if="this.joined || this.followed"
+                v-if="joined || followed"
             >
               <img
                   :src="activity.picture_id"
