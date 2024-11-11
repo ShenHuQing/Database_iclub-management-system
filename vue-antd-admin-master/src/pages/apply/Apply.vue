@@ -116,9 +116,7 @@ export default {
         picture_id: this.picture_id,
         is_passed: 0
       }
-      await instance.post('/iClub/apply',
-          {activity: activity}
-      )
+      await instance.post('/iClub/apply',activity)
           .then(response => {
             const res = response.data;
             if (res.code === 0) {
