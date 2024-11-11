@@ -47,16 +47,7 @@
           :labelCol="{span: 7}"
           :wrapperCol="{span: 10}"
       >
-        <a-upload
-            action="/upload"
-            list-type="picture"
-            :show-upload-list="true"
-            :on-change="handleUpload"
-        >
-          <a-button>
-            <a-icon type="upload" /> 上传
-          </a-button>
-        </a-upload>
+        <input type="file" @change="onFileChange" id="picture_id">
       </a-form-item>
       <a-form-item style="margin-top: 24px" :wrapperCol="{span: 10, offset: 7}">
         <a-button type="primary" @click="handleSubmit">提交</a-button>
@@ -91,9 +82,14 @@ export default {
     }
   },
   methods: {
-    handleUpload(info) {
-      if (info.file.status === 'done') {
-        this.picture_id = info.file.response.id;
+    onFileChange(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          this.picture_id = e.target.result;
+        };
+        reader.readAsDataURL(file);
       }
     },
     resetForm() {

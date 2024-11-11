@@ -276,18 +276,20 @@ export default {
         const clubDetailResponse = await instance.get(`/iClub/getClubDetails/${clubId}`);
         this.basicInfo = clubDetailResponse.data.data;
 
+        const activitiesResponse = await instance.post(`/iClub/getActivities`, {studentId: this.user.id, clubId: this.basicInfo.id});
+        this.activities = activitiesResponse.data.data;
+
         const commentsResponse = await instance.post(`/iClub/getComments`, {studentId: this.user.id, clubId: this.basicInfo.id});
         this.comments = commentsResponse.data.data;
 
         const followedResponse = await instance.post(`/iClub/getFollow`, {studentId: this.user.id, clubId: this.basicInfo.id});
         this.followed = !followedResponse.data.code; ////0已经关注，其他代表没有
-        console.log("是否关注社团：" + this.followed);
 
         const joinedResponse = await instance.post(`/iClub/getJoin`, {studentId: this.user.id, clubId: this.basicInfo.id});
         this.joined = !joinedResponse.data.code; //0已经加入，其他代表没有
 
         const isStaffResponse = await instance.post(`/iClub/isStaff`, {studentId: this.user.id, clubId: this.basicInfo.id});
-        this.isStaff = isStaffResponse.data.data; //0已经加入，其他代表没有
+        this.isStaff = isStaffResponse.data.data;
 
         const memberResponse = await instance.post(`/iClub/getMembers`, {clubId: this.basicInfo.id});
         this.studentData = memberResponse.data.data.map(member => {
