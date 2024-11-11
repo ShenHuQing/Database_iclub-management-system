@@ -289,7 +289,7 @@ export default {
         this.joined = !joinedResponse.data.code; //0已经加入，其他代表没有
 
         const isStaffResponse = await instance.post(`/iClub/isStaff`, {studentId: this.user.id, clubId: this.basicInfo.id});
-        this.isStaff = isStaffResponse.data.data;
+        this.isStaff = isStaffResponse.data.code === 0; //0代表是负责人，-1代表不是
 
         const memberResponse = await instance.post(`/iClub/getMembers`, {clubId: this.basicInfo.id});
         this.studentData = memberResponse.data.data.map(member => {

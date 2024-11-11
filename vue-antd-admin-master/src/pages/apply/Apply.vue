@@ -104,21 +104,21 @@ export default {
     async handleSubmit() {
       this.loading = true;
       const [start_time, end_time] = this.activityTime;
+      const start = new Date(start_time).toLocaleString();
+      const end = new Date(end_time).toLocaleString();
       const activity = {
         id: Date.now().toString(),
         time: new Date().toLocaleString(),
         club_name: this.club_name,
         title: this.title,
         content: this.content,
-        start_time: start_time,
-        end_time: end_time,
+        start_time: start,
+        end_time: end,
         venue: this.venue,
         picture_id: this.picture_id,
         is_passed: 0
       }
-      await instance.post('/iClub/apply',
-          {activity: activity}
-      )
+      await instance.post('/iClub/apply', activity)
           .then(response => {
             const res = response.data;
             if (res.code === 0) {
