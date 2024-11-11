@@ -1,115 +1,55 @@
 <template>
-  <page-layout title="单号：234231029431" logo="https://gw.alipayobjects.com/zos/rmsportal/nxkuOJlFJuAUhzlMTCEe.png">
+  <page-layout :title="activity.title" logo="https://example.com/your-logo.png">
     <detail-list size="small" :col="2" slot="headerContent">
-      <detail-list-item term="创建人">曲丽丽</detail-list-item>
-      <detail-list-item term="订购产品">XX服务</detail-list-item>
-      <detail-list-item term="创建时间">2018-08-07</detail-list-item>
-      <detail-list-item term="关联单据"><a>12421</a></detail-list-item>
-      <detail-list-item term="生效日期">2018-08-07 ~ 2018-12-11</detail-list-item>
-      <detail-list-item term="备注">请于两个工作日内确认</detail-list-item>
+      <!-- 活动日期 -->
+      <detail-list-item term="活动日期">{{ activity.time }}</detail-list-item>
+      <!-- 开始日期 -->
+      <detail-list-item term="开始日期">{{ activity.start_time }}</detail-list-item>
+      <!-- 结束日期 -->
+      <detail-list-item term="结束日期">{{ activity.end_time }}</detail-list-item>
+      <!-- 活动内容 -->
+      <detail-list-item term="活动内容">{{ activity.content }}</detail-list-item>
+      <!-- 活动场地 -->
+      <detail-list-item term="活动场地">{{ activity.venue }}</detail-list-item>
+      <!-- 预期人数 -->
+      <detail-list-item term="预期人数">{{ activity.expectedParticipants || 'N/A' }}</detail-list-item>
+      <!-- 负责人 -->
+      <detail-list-item term="负责人">{{ activity.organizer || 'N/A' }}</detail-list-item>
+      <!-- 报名时间 -->
+      <detail-list-item term="报名时间">{{ activity.registrationStart }} ~ {{ activity.registrationEnd }}</detail-list-item>
+      <!-- 图片显示 -->
+      <detail-list-item term="活动图片">
+        <img v-if="activity.picture" :src="activity.picture" alt="活动图片" style="max-width: 100%; height: auto;"/>
+        <span v-else>无图片</span>
+      </detail-list-item>
     </detail-list>
-    <template slot="extra">
-      <head-info title="状态" content="待审批" />
-      <head-info title="订单金额" content="¥ 568.08" />
-    </template>
+
     <template slot="action">
       <a-button-group style="margin-right: 8px;">
-        <a-button>操作</a-button>
-        <a-button>操作</a-button>
-        <a-button><a-icon type="ellipsis"/></a-button>
+        <a-button type="primary" @click="handleSignUp">报名</a-button>
+        <a-button type="primary" @click="handleCheckIn">签到</a-button>
       </a-button-group>
-      <a-button type="primary" >主操作</a-button>
     </template>
-    <a-card :bordered="false" title="流程进度">
+
+    <a-card :bordered="false" title="活动流程">
       <a-steps :current="1" progress-dot :direction="isMobile ? 'vertical' : 'horizontal'">
-        <a-step title="创建项目">
+        <a-step title="活动报名">
           <a-step-item-group :align="isMobile ? 'left' : 'center'" slot="description">
-            <a-step-item link="/dashboard/workplace" title="曲丽丽" icon="dingding-o"/>
-            <a-step-item title="2016-12-12 12:32"/>
+            <a-step-item link="/dashboard/workplace" title="报名负责人" icon="dingding-o"/>
+            <a-step-item title="2023-10-01 09:00"/>
+            <a-table :data-source="registrationData" :columns="tableColumns"></a-table>
           </a-step-item-group>
         </a-step>
-        <a-step title="部门初审">
+        <a-step title="活动进行">
           <a-step-item-group :align="isMobile ? 'left' : 'center'" slot="description">
-            <a-step-item link="/form/step" title="周毛毛" icon="dingding-o" />
-            <a-step-item link="/result/success" title="催一下" icon="bell"/>
+            <a-step-item link="/form/step" title="签到负责人" icon="dingding-o" />
+            <a-step-item link="/result/success" title="提醒待办" icon="bell"/>
+            <a-table :data-source="participationData" :columns="tableColumns"></a-table>
           </a-step-item-group>
         </a-step>
-        <a-step title="财务复核">
-        </a-step>
-        <a-step title="完成">
+        <a-step title="活动结束">
         </a-step>
       </a-steps>
-    </a-card>
-    <a-card style="margin-top: 24px" :bordered="false" title="用户信息">
-      <detail-list>
-        <detail-list-item term="用户姓名">付晓晓</detail-list-item>
-        <detail-list-item term="会员卡号">32943898021309809423</detail-list-item>
-        <detail-list-item term="身份证">3321944288191034921</detail-list-item>
-        <detail-list-item term="联系方式">18112345678</detail-list-item>
-        <detail-list-item term="联系地址">浙江省杭州市西湖区黄姑山路工专路交叉路口</detail-list-item>
-      </detail-list>
-      <detail-list title="信息组">
-        <detail-list-item term="某某数据">725</detail-list-item>
-        <detail-list-item term="该数据更新时间">2018-08-08</detail-list-item>
-        <detail-list-item >&nbsp;</detail-list-item>
-        <detail-list-item term="某某数据">725</detail-list-item>
-        <detail-list-item term="该数据更新时间">2018-08-08</detail-list-item>
-        <detail-list-item >&nbsp;</detail-list-item>
-      </detail-list>
-      <a-card type="inner" title="多层信息组">
-        <detail-list title="组名称" size="small">
-          <detail-list-item term="负责人">林东东</detail-list-item>
-          <detail-list-item term="角色码">1234567</detail-list-item>
-          <detail-list-item term="所属部门">XX公司-YY部</detail-list-item>
-          <detail-list-item term="过期时间">2018-08-08</detail-list-item>
-          <detail-list-item term="描述">这段描述很长很长很长很长很长很长很长很长很长很长很长很长很长很长...</detail-list-item>
-        </detail-list>
-        <a-divider style="margin: 16px 0" />
-        <detail-list title="组名称" size="small" :col="1">
-          <detail-list-item term="学名">林东东</detail-list-item>
-          <detail-list-item term="角色码">1234567</detail-list-item>
-          <detail-list-item term="所属部门">XX公司-YY部</detail-list-item>
-          <detail-list-item term="过期时间">2018-08-08</detail-list-item>
-          <detail-list-item term="描述">这段描述很长很长很长很长很长很长很长很长很长很长很长很长很长很长...</detail-list-item>
-        </detail-list>
-        <a-divider style="margin: 16px 0" />
-        <detail-list title="组名称" size="small" :col="2">
-          <detail-list-item term="学名">林东东</detail-list-item>
-          <detail-list-item term="角色码">1234567</detail-list-item>
-          <detail-list-item term="所属部门">XX公司-YY部</detail-list-item>
-          <detail-list-item term="过期时间">2018-08-08</detail-list-item>
-          <detail-list-item term="描述">这段描述很长很长很长很长很长很长很长很长很长很长很长很长很长很长...</detail-list-item>
-        </detail-list>
-      </a-card>
-    </a-card>
-    <a-card style="margin-top: 24px" :bordered="false" title="用户近半年来电记录">
-      <a-list></a-list>
-    </a-card>
-    <a-card
-      style="margin-top: 24px"
-      :bordered="false"
-      :tabList="tabList"
-      :activeTabKey="activeTabKey"
-      @tabChange="(key) => {this.activeTabKey = key}"
-    >
-      <a-table
-        v-if="activeTabKey === '1'"
-        :columns="operationColumns"
-        :dataSource="operation1"
-        :pagination="false"
-      />
-      <a-table
-        v-if="activeTabKey === '2'"
-        :columns="operationColumns"
-        :dataSource="operation2"
-        :pagination="false"
-      />
-      <a-table
-        v-if="activeTabKey === '3'"
-        :columns="operationColumns"
-        :dataSource="operation3"
-        :pagination="false"
-      />
     </a-card>
   </page-layout>
 </template>
@@ -118,52 +58,86 @@
 import PageLayout from '@/layouts/PageLayout'
 import DetailList from '@/components/tool/DetailList'
 import AStepItem from '@/components/tool/AStepItem'
-import {operation1, operation2, operation3, operationColumns} from '@/mock/common/tableData'
-import {mapState} from 'vuex'
-import HeadInfo from '@/components/tool/HeadInfo';
-
+import { mapState } from 'vuex'
+import ATable from 'ant-design-vue/lib/table'
+import axios from 'axios'
 
 const DetailListItem = DetailList.Item
 const AStepItemGroup = AStepItem.Group
 
-const tabList = [
-  {
-    key: '1',
-    tab: '操作日志一'
-  },
-  {
-    key: '2',
-    tab: '操作日志二'
-  },
-  {
-    key: '3',
-    tab: '操作日志三'
-  }
-]
-
 export default {
-  name: 'AdvancedDetail',
-  components: {HeadInfo, AStepItemGroup, AStepItem, DetailListItem, DetailList, PageLayout},
-  data () {
+  name: 'EventDetail',
+  components: { AStepItemGroup, AStepItem, DetailListItem, DetailList, PageLayout, ATable },
+  data() {
     return {
-      tabList,
-      operationColumns,
-      operation1,
-      operation2,
-      operation3,
-      activeTabKey: '2'
+      isMobile: false,
+      activityId: 1,
+      activity: {
+        title: '',
+        time: '',
+        start_time: '',
+        end_time: '',
+        content: '',
+        venue: '',
+        picture: '',
+        is_passed: 0,
+        expectedParticipants: '',
+        organizer: '',
+        registrationStart: '',
+        registrationEnd: ''
+      },
+      registrationData: [
+        { key: 1, name: '张三', status: '已报名' },
+        { key: 2, name: '李四', status: '已报名' },
+      ],
+      participationData: [
+        { key: 1, name: '张三', status: '已签到' },
+        { key: 2, name: '李四', status: '未签到' },
+      ],
+      tableColumns: [
+        { title: '姓名', dataIndex: 'name', key: 'name' },
+        { title: '状态', dataIndex: 'status', key: 'status' },
+      ],
     }
   },
   computed: {
     ...mapState('setting', ['isMobile'])
   },
-  methods: {
-    onTabChange (key) {
-      console.log(key)
-    }
+  mounted() {
+    this.fetchActivityDetails();
   },
+  methods: {
+    fetchActivityDetails() {
+      axios.get(`/iClub/activities/${this.activityId}`)
+          .then(response => {
+            const data = response.data;
+            this.activity = {
+              title: data.title || '',
+              time: data.time || '',
+              start_time: data.start_time || '',
+              end_time: data.end_time || '',
+              content: data.content || '',
+              venue: data.venue || '',
+              picture: data.picture_url || '',
+              is_passed: data.is_passed || 0,
+              expectedParticipants: data.expectedParticipants || '',
+              organizer: data.organizer || '',
+              registrationStart: data.registrationStart || '',
+              registrationEnd: data.registrationEnd || '',
+            };
+          })
+          .catch(error => {
+            console.error('Error fetching activity details:', error);
+          });
+    },
+    handleSignUp() {
+      const newStudent = { key: this.registrationData.length + 1, name: '新学生', status: '已报名' };
+      this.registrationData.push(newStudent);
+    },
+    handleCheckIn() {
+      const newParticipant = { key: this.participationData.length + 1, name: '新学生', status: '已签到' };
+      this.participationData.push(newParticipant);
+    }
+  }
 }
 </script>
-
-<style lang="less" scoped>
-</style>
