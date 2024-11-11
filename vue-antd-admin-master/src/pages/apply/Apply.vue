@@ -96,6 +96,15 @@ export default {
         this.picture_id = info.file.response.id;
       }
     },
+    resetForm() {
+      this.club_name = '';
+      this.title = '';
+      this.content = '';
+      this.activityTime = [];
+      this.venue = '';
+      this.picture_id = '';
+      this.loading = false;
+    },
     async handleSubmit() {
       this.loading = true;
       const [start_time, end_time] = this.activityTime;
@@ -118,13 +127,14 @@ export default {
             const res = response.data;
             if (res.code === 0) {
               this.$message.success('申请活动成功，请等待管理员审批', 3);
+              this.resetForm();
             } else {
               this.$message.error('申请失败，请重试', 3);
             }
           })
           .catch(error => {
             console.error('申请失败，请重试', error);
-            this.$message.error('申请失败，请重试', error);
+            this.$message.error('申请失败，请重试', 3);
           })
           .finally(() => {
             this.loading = false;
