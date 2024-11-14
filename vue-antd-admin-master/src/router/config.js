@@ -83,7 +83,7 @@ const options = {
         {
           path: '/activitydetail',
           name: '活动详情',
-          component: () => import('@/pages/detail/AdvancedDetail'),
+          component: () => import('@/pages/activitydetail/Activitydetail'),
           meta: {
             invisible: true, // 添加此属性
             page: {
