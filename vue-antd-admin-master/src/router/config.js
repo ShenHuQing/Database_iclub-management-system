@@ -200,26 +200,6 @@ const options = {
           ]
         },
         {
-          path: 'details',
-          name: '详情页',
-          meta: {
-            icon: 'profile'
-          },
-          component: BlankView,
-          children: [
-            {
-              path: 'basic',
-              name: '基础详情页',
-              component: () => import('@/pages/detail/BasicDetail')
-            },
-            {
-              path: 'advance',
-              name: '活动详情',
-              component: () => import('@/pages/detail/AdvancedDetail')
-            }
-          ]
-        },
-        {
           path: 'result',
           name: '结果页',
           meta: {

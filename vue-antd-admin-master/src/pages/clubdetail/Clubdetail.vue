@@ -9,6 +9,7 @@
         <div class="actions">
           <button @click="joinSociety">{{ joined ? '已加入' : '加入社团' }}</button>
           <button @click="followSociety">{{ followed ? '已关注' : '关注社团' }}</button>
+          <button v-if="isStaff" @click="applyActivity">{{ '申请活动' }}</button>
         </div>
       </div>
     </div>
@@ -309,6 +310,9 @@ export default {
       } finally {
         this.loading = false;
       }
+    },
+    applyActivity() {
+      this.$router.push({path: '/form/apply', query: {club_name: this.basicInfo.name}});
     },
     goToActivityDetail(id) {
       if (this.joined || this.followed) {

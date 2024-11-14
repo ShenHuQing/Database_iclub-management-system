@@ -6,7 +6,8 @@
           :labelCol="{span: 7}"
           :wrapperCol="{span: 10}"
       >
-        <a-input v-model="club_name" placeholder="请输入申请社团" />
+        <a-input v-if="!club_name" v-model="club_name" placeholder="请输入申请社团" />
+        <span v-if="club_name">{{club_name}}</span>
       </a-form-item>
       <a-form-item
           label="活动主题"
@@ -80,6 +81,9 @@ export default {
     desc() {
       return '社团负责人申请活动'
     }
+  },
+  mounted() {
+    this.club_name = this.$route.query.club_name || '';
   },
   methods: {
     onFileChange(event) {

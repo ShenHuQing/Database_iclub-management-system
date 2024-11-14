@@ -247,6 +247,7 @@ export default {
   font-weight: bold; /* 设置字体加粗 */
   color: #333; /* 标题颜色 */
   margin-bottom: 3px; /* 和下方内容的间距 */
+  margin-top: 10px;
   background-color: #f4f4f4; /* 背景色为浅灰色 */
   padding: 10px 0; /* 内边距使标题框更大 */
   border-radius: 8px; /* 圆角 */
