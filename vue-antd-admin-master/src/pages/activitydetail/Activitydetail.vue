@@ -149,7 +149,10 @@ export default {
     },
     handleSignUp() {
       const alreadySignedUp = this.participants.some(participant => participant.id === this.user.id);
-      if (alreadySignedUp) return;
+      if (alreadySignedUp) {
+        this.$message.error('您已经报名', 3);
+        return;
+      }
       const participant = {
         name: this.user.name,
         id: this.user.id,
@@ -185,6 +188,8 @@ export default {
             .catch(error => {
               console.error('Error sign in activity:', error);
             });
+      } else {
+        this.$message.error('您已经签到', 3);
       }
     }
   }
