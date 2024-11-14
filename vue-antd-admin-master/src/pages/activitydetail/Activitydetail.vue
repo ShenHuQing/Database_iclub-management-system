@@ -140,12 +140,36 @@ export default {
         id: this.user.id,
         checkedIn: false
       }
-      this.participants.push(participant);
+      instance.post(`/iClub/activityEnroll`, { studentId: this.user.id, activityId: this.activityId})
+          .then(response => {
+            const res = response.data;
+            if (res.code === 0) {
+              this.$message.success('报名成功，请等待活动开始时间后签到', 3);
+              this.participants.push(participant);
+            } else {
+              this.$message.error('报名失败，请重试', 3);
+            }
+          })
+          .catch(error => {
+            console.error('Error enrolling activity:', error);
+          });
     },
     handleCheckIn() {
       const participant = this.participants.find(a => a.id === this.user.id);
       if (participant && !participant.checkedIn) {
-        participant.checkedIn = true;
+        instance.post(`/iClub/signIn`, { studentId: this.user.id, activityId: this.activityId})
+            .then(response => {
+              const res = response.data;
+              if (res.code === 0) {
+                this.$message.success('签到成功，积分成功加100', 3);
+                participant.checkedIn = true;
+              } else {
+                this.$message.error('签到失败，请重试', 3);
+              }
+            })
+            .catch(error => {
+              console.error('Error sign in activity:', error);
+            });
       }
     }
   }
