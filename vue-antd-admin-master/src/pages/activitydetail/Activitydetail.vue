@@ -120,16 +120,31 @@ export default {
     this.activityId = this.$route.query.activityId;
     this.joined = this.$route.query.joined;
     this.fetchActivityDetails();
+    this.fetchCheckedIn();
   },
   methods: {
     fetchActivityDetails() {
       instance.post(`/iClub/activityDetail`, { id: this.activityId })
           .then(response => {
-            const data = response.data;
-            this.activity = data.data;
+            this.activity = response.data.data;
           })
           .catch(error => {
             console.error('Error fetching activity details:', error);
+          });
+    },
+    fetchCheckedIn() {
+      instance.post(`/iClub/getEnrollInfo`, { activityId: this.activityId })
+          .then(response => {
+            this.participants = response.data.data.map(participant => {
+              return {
+                id: participant.student_id,
+                name: participant.student_name,
+                checkedIn: participant.is_arrived
+              };
+            });
+          })
+          .catch(error => {
+            console.error('Error fetching checked in:', error);
           });
     },
     handleSignUp() {
