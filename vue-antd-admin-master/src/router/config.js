@@ -120,17 +120,17 @@ const options = {
             },
             {
               path: 'basic',
-              name: '基础表单',
+              name: '活动申请',
               component: () => import('@/pages/form/basic'),
             },
             {
               path: 'step',
-              name: '分步表单',
+              name: '社团报名',
               component: () => import('@/pages/form/step'),
             },
             {
               path: 'advance',
-              name: '高级表单',
+              name: '发布通知',
               component: () => import('@/pages/form/advance'),
             }
           ]

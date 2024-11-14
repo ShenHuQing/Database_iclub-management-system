@@ -1,25 +1,20 @@
 module.exports = {
   messages: {
     CN: {
-      desc: '高级表单常见于一次性输入和提交大批量数据的场景。',
-      repository: '仓库管理',
-      task: '任务管理',
-      user: '用户管理',
-      submit: '提交'
+      pageDesc: '填写以下内容以发布通知',
+      title: '通知标题',
+      titleInput: '请输入通知标题',
+      describe: '通知内容',
+      describeInput: '请输入通知内容',
+      critics: '负责人',
+      criticsInput: '请写出本次发布通知的相关负责人',
+      signupTime: '发布时间',
+      uploadImage: '上传图片',
+      upload: '上传',
+      notificationType: '通知类型',
+      activityNotification: '活动通知',
+      clubApprovalNotification: '报名社团审批结果通知',
+      eventApprovalNotification: '申请活动审批结果通知',
     },
-    HK: {
-      desc: '高級表單常見於一次性輸入和提交大批量數據的場景。',
-      repository: '倉庫管理',
-      task: '任務管理',
-      user: '用戶管理',
-      submit: '提交'
-    },
-    US: {
-      desc: 'Advanced forms are common in scenarios where large quantities of data are entered and submitted at one time.',
-      repository: 'Repository Manage',
-      task: 'Task Manage',
-      user: 'User Manage',
-      submit: 'submit'
-    }
   }
 }

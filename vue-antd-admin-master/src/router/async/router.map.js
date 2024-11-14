@@ -52,7 +52,7 @@ const routerMap = {
   },
   advanceForm: {
     path: 'advance',
-    name: '高级表单',
+    name: '发布通知',
     component: () => import('@/pages/form/advance')
   },
   list: {
