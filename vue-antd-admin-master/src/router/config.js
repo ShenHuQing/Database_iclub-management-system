@@ -116,22 +116,12 @@ const options = {
             {
               path: 'apply',
               name: '活动申请',
-              component: () => import('@/pages/apply'),
+              component: () => import('@/pages/apply/Apply'),
             },
             {
-              path: 'basic',
-              name: '活动申请',
-              component: () => import('@/pages/form/basic'),
-            },
-            {
-              path: 'step',
-              name: '社团报名',
-              component: () => import('@/pages/form/step'),
-            },
-            {
-              path: 'advance',
+              path: 'announcement',
               name: '发布公告',
-              component: () => import('@/pages/form/advance'),
+              component: () => import('@/pages/announcement/Announcement'),
             }
           ]
         },
