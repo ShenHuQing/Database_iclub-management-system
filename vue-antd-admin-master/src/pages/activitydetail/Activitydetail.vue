@@ -120,32 +120,76 @@ export default {
     this.activityId = this.$route.query.activityId;
     this.joined = this.$route.query.joined;
     this.fetchActivityDetails();
+    this.fetchCheckedIn();
   },
   methods: {
     fetchActivityDetails() {
       instance.post(`/iClub/activityDetail`, { id: this.activityId })
           .then(response => {
-            const data = response.data;
-            this.activity = data.data;
+            this.activity = response.data.data;
           })
           .catch(error => {
             console.error('Error fetching activity details:', error);
           });
     },
+    fetchCheckedIn() {
+      instance.post(`/iClub/getEnrollInfo`, { activityId: this.activityId })
+          .then(response => {
+            this.participants = response.data.data.map(participant => {
+              return {
+                id: participant.student_id,
+                name: participant.student_name,
+                checkedIn: participant.is_arrived
+              };
+            });
+          })
+          .catch(error => {
+            console.error('Error fetching checked in:', error);
+          });
+    },
     handleSignUp() {
       const alreadySignedUp = this.participants.some(participant => participant.id === this.user.id);
-      if (alreadySignedUp) return;
+      if (alreadySignedUp) {
+        this.$message.error('您已经报名', 3);
+        return;
+      }
       const participant = {
         name: this.user.name,
         id: this.user.id,
         checkedIn: false
       }
-      this.participants.push(participant);
+      instance.post(`/iClub/activityEnroll`, { studentId: this.user.id, activityId: this.activityId})
+          .then(response => {
+            const res = response.data;
+            if (res.code === 0) {
+              this.$message.success('报名成功，请等待活动开始时间后签到', 3);
+              this.participants.push(participant);
+            } else {
+              this.$message.error('报名失败，请重试', 3);
+            }
+          })
+          .catch(error => {
+            console.error('Error enrolling activity:', error);
+          });
     },
     handleCheckIn() {
       const participant = this.participants.find(a => a.id === this.user.id);
       if (participant && !participant.checkedIn) {
-        participant.checkedIn = true;
+        instance.post(`/iClub/signIn`, { studentId: this.user.id, activityId: this.activityId})
+            .then(response => {
+              const res = response.data;
+              if (res.code === 0) {
+                this.$message.success('签到成功，积分成功加100', 3);
+                participant.checkedIn = true;
+              } else {
+                this.$message.error('签到失败，请重试', 3);
+              }
+            })
+            .catch(error => {
+              console.error('Error sign in activity:', error);
+            });
+      } else {
+        this.$message.error('您已经签到', 3);
       }
     }
   }
