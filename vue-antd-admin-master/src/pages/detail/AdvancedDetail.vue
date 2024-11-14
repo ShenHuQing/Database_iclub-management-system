@@ -11,15 +11,9 @@
       <detail-list-item term="活动内容">{{ activity.content }}</detail-list-item>
       <!-- 活动场地 -->
       <detail-list-item term="活动场地">{{ activity.venue }}</detail-list-item>
-      <!-- 预期人数 -->
-      <detail-list-item term="预期人数">{{ activity.expectedParticipants || 'N/A' }}</detail-list-item>
-      <!-- 负责人 -->
-      <detail-list-item term="负责人">{{ activity.organizer || 'N/A' }}</detail-list-item>
-      <!-- 报名时间 -->
-      <detail-list-item term="报名时间">{{ activity.registrationStart }} ~ {{ activity.registrationEnd }}</detail-list-item>
       <!-- 图片显示 -->
       <detail-list-item term="活动图片">
-        <img v-if="activity.picture" :src="activity.picture" alt="活动图片" style="max-width: 100%; height: auto;"/>
+        <img v-if="activity.picture_id" :src="activity.picture_id" alt="活动图片" style="max-width: 100%; height: auto;"/>
         <span v-else>无图片</span>
       </detail-list-item>
     </detail-list>
@@ -65,6 +59,11 @@ import axios from 'axios'
 const DetailListItem = DetailList.Item
 const AStepItemGroup = AStepItem.Group
 
+const instance = axios.create({
+  baseURL: 'http://localhost:8080',  // 后端地址
+  withCredentials: true,
+});
+
 export default {
   name: 'EventDetail',
   components: { AStepItemGroup, AStepItem, DetailListItem, DetailList, PageLayout, ATable },
@@ -73,18 +72,16 @@ export default {
       isMobile: false,
       activityId: 1,
       activity: {
-        title: '',
-        time: '',
-        start_time: '',
-        end_time: '',
-        content: '',
-        venue: '',
-        picture: '',
-        is_passed: 0,
-        expectedParticipants: '',
-        organizer: '',
-        registrationStart: '',
-        registrationEnd: ''
+        id: 1,
+        time:'',
+        club_name:'',
+        title: '编程马拉松',
+        content: '不理解是干啥的',
+        start_time: '2023-05-15 16:00',
+        end_time: '2023-05-15 17:00',
+        venue: '地点',
+        picture_id: require('../../assets/img/preview.png'),
+        is_passed: 0
       },
       registrationData: [
         { key: 1, name: '张三', status: '已报名' },
@@ -112,27 +109,15 @@ export default {
     }
   },
   mounted() {
+    this.activityId = this.$route.query.activityId;
     this.fetchActivityDetails();
   },
   methods: {
     fetchActivityDetails() {
-      axios.get(`/iClub/activities/${this.activityId}`)
+      instance.post(`/iClub/activityDetail`, { id: this.activityId })
           .then(response => {
             const data = response.data;
-            this.activity = {
-              title: data.title || '',
-              time: data.time || '',
-              start_time: data.start_time || '',
-              end_time: data.end_time || '',
-              content: data.content || '',
-              venue: data.venue || '',
-              picture: data.picture_url || '',
-              is_passed: data.is_passed || 0,
-              expectedParticipants: data.expectedParticipants || '',
-              organizer: data.organizer || '',
-              registrationStart: data.registrationStart || '',
-              registrationEnd: data.registrationEnd || '',
-            };
+            this.activity = data.data;
           })
           .catch(error => {
             console.error('Error fetching activity details:', error);

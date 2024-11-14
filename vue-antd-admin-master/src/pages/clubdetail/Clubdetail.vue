@@ -9,6 +9,7 @@
         <div class="actions">
           <button @click="joinSociety">{{ joined ? '已加入' : '加入社团' }}</button>
           <button @click="followSociety">{{ followed ? '已关注' : '关注社团' }}</button>
+          <button v-if="isStaff" @click="applyActivity">{{ '申请活动' }}</button>
         </div>
       </div>
     </div>
@@ -28,22 +29,18 @@
 
     <div class="content">
       <div v-if="activeTab === 'activities'" class="activity-list">
-        <a-row :gutter="16">
-          <a-col :span="8" v-for="activity in activities" :key="activity.id">
+        <div class="grid-container">
+          <div class="activity-card" v-for="activity in activities" :key="activity.id">
             <a-card
                 hoverable
                 style="border-radius: 8px; overflow: hidden; transition: transform 0.3s;"
                 @click="goToActivityDetail(activity.id)"
-                v-if="joined || followed"
             >
               <img
                   :src="activity.picture_id"
                   height="200"
                   style="border-top-left-radius: 8px; border-top-right-radius: 8px; object-fit: cover; width: 100%;"
               />
-<!--              <a-card-meta style="padding: 9px;" :title="activity.name"-->
-<!--                           :description="`${activity.start_time} - ${activity.end_time} | 地点：${activity.venue}`"-->
-<!--                           />-->
               <div style="padding: 16px;">
                 <div class="activity-info">
                   <h3 class="activity-title">{{ activity.title }}</h3>
@@ -55,8 +52,8 @@
                 </div>
               </div>
             </a-card>
-          </a-col>
-        </a-row>
+          </div>
+        </div>
       </div>
 
 
@@ -214,12 +211,15 @@ export default {
       activities: [
         {
           id: 1,
+          time:'',
+          club_name:'',
           title: '编程马拉松',
           content: '不理解是干啥的',
           start_time: '2023-05-15 16:00',
           end_time: '2023-05-15 17:00',
           venue: '地点',
           picture_id: require('../../assets/img/preview.png'),
+          is_passed: 0
         }
       ],
       // comments: [],
@@ -311,8 +311,15 @@ export default {
         this.loading = false;
       }
     },
+    applyActivity() {
+      this.$router.push({path: '/form/apply', query: {club_name: this.basicInfo.name}});
+    },
     goToActivityDetail(id) {
-      this.$router.push({path: '', query: {activityId: id}});
+      if (this.joined || this.followed) {
+        this.$router.push({path: '/activitydetail', query: {activityId: id, joined: this.joined}});
+      } else {
+        this.$message.error('请先加入或关注该社团以查看活动详情', 3);
+      }
     },
     joinSociety() {
       if (!this.joined) {
@@ -386,24 +393,24 @@ export default {
     },
     // 删除评论及其回复
     async deleteComment(comment) {
-        await instance.delete('iClub/deleteComment', {
-          data:{
-            commentId: comment.id,
-            clubId: this.basicInfo.id}
-        })
-            .then(response => {
-              const res = response.data;
-              if (res.code === 0) {
-                this.comments = this.comments.filter(c => c.id !== comment.id);
-                this.$message.success('评论已删除', 3)
-              } else {
-                this.$message.error('评论删除失败，请重试', 3);
-              }
-            })
-            .catch(error => {
-              console.error('评论删除失败，请重试', error);
-              this.$message.error('评论删除失败，服务器出错，请稍后再试', 3);
-            })
+      await instance.delete('iClub/deleteComment', {
+        data:{
+          commentId: comment.id,
+          clubId: this.basicInfo.id}
+      })
+          .then(response => {
+            const res = response.data;
+            if (res.code === 0) {
+              this.comments = this.comments.filter(c => c.id !== comment.id);
+              this.$message.success('评论已删除', 3)
+            } else {
+              this.$message.error('评论删除失败，请重试', 3);
+            }
+          })
+          .catch(error => {
+            console.error('评论删除失败，请重试', error);
+            this.$message.error('评论删除失败，服务器出错，请稍后再试', 3);
+          })
 
     },
     // 删除回复
@@ -435,8 +442,8 @@ export default {
       const action = this.followed ? 'unfollow' : 'follow';
       await instance.post('iClub/changeFollow',
           {clubId: this.basicInfo.id,
-        studentId: this.user.id,
-        action: action})
+            studentId: this.user.id,
+            action: action})
           .then(response => {
             if (response.data.code === 0) {
               this.followed = !this.followed;
@@ -508,6 +515,28 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.activity-list {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* 自动填充列，卡片宽度最小 280px */
+  gap: 16px; /* 网格间距 */
+  padding: 16px; /* 外边距 */
+}
+
+.activity-card {
+  width: 100%; /* 确保卡片占满每列的宽度 */
+  box-sizing: border-box;
+}
+
+.activity-card img {
+  width: 100%;
+  object-fit: cover; /* 保持图片比例填充 */
+}
+
 .club-detail {
   max-width: 1200px; /* 调宽页面至1200px */
   margin: 0 auto;
@@ -524,7 +553,7 @@ export default {
 }
 
 .club-image {
-  width: 150px;
+  width: 200px;
   height: 150px;
   border-radius: 10px;
   margin-right: 20px;

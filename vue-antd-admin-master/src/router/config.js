@@ -81,6 +81,17 @@ const options = {
           }
         },
         {
+          path: '/activitydetail',
+          name: '活动详情',
+          component: () => import('@/pages/activitydetail/Activitydetail'),
+          meta: {
+            invisible: true, // 添加此属性
+            page: {
+              cacheAble: true
+            }
+          }
+        },
+        {
           path: '/enroll',
           name: '报名表单',
           component: () => import('@/pages/enroll/Enroll'),
@@ -185,26 +196,6 @@ const options = {
                   component: () => import('@/pages/list/search/ProjectList'),
                 }
               ]
-            }
-          ]
-        },
-        {
-          path: 'details',
-          name: '详情页',
-          meta: {
-            icon: 'profile'
-          },
-          component: BlankView,
-          children: [
-            {
-              path: 'basic',
-              name: '基础详情页',
-              component: () => import('@/pages/detail/BasicDetail')
-            },
-            {
-              path: 'advance',
-              name: '活动详情',
-              component: () => import('@/pages/detail/AdvancedDetail')
             }
           ]
         },
