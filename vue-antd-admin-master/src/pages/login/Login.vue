@@ -161,9 +161,9 @@ export default {
         this.setRoles(roles);
         setAuthorization({ token: loginRes.data.token, expireAt: new Date(loginRes.data.expireAt) });
         this.$router.push({ path: '/dashboard/workplace' });
-        // console.log(user);
-        // console.log(permissions);
-        // console.log(roles);
+        console.log(user);
+        console.log(permissions);
+        console.log(roles);
         this.$message.success(loginRes.message, 3);
       } else {
         this.error = "登录失败，账号或密码错误";
