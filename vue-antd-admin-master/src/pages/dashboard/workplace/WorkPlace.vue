@@ -3,59 +3,65 @@
     <div>
       <a-row style="margin: 0 -12px">
         <a-col style="padding: 0 12px" :xl="24" :lg="24" :md="24" :sm="24" :xs="24">
-          <a-card class="notice-list" :loading="loading" style="margin-bottom: 24px;" :bordered="false" title="通知提醒" :body-style="{padding: 0}">
+
+          <a-card class="announcement-list" :loading="loading" style="margin-bottom: 24px;" :bordered="false" title="公告" :body-style="{padding: 0}">
             <div>
-              <a-card-grid :key="i" v-for="(item, i) in activities">
-                <a-card :bordered="false" :body-style="{padding: 0}">
-                  <a-card-meta>
-                    <div slot="title" class="card-title">
-                      <span>{{ item.title }}</span>
-                    </div>
-                  </a-card-meta>
-                  <div class="activity-item">
-                    <a class="group" href="https://www.buaa.edu.cn/">活动详情</a>
-                    <span class="datetime">{{ item.time }}</span>
-                  </div>
-                </a-card>
-              </a-card-grid>
-            </div>
-          </a-card>
-          <a-card class="activity-list" :loading="loading" style="margin-bottom: 24px;" :bordered="false" title="活动提醒" :body-style="{padding: 0}">
-            <div>
-              <a-card-grid :key="i" v-for="(item, i) in activities">
+              <a-card-grid :key="i" v-for="(item, i) in announcements">
                 <a-card :bordered="false" :body-style="{padding: 0}" style="margin-bottom: 20px; border-radius: 8px;">
                   <a-card-meta>
                     <div slot="title" class="card-title">
                       <span>{{ item.title }}</span>
                     </div>
                   </a-card-meta>
-                  <div class="activity-item">
-                    <div class="activity-header">
-                      <span>{{ item.club_name}}</span>
+                  <div class="card-item">
+                    <div class="card-header">
+                      <span>{{ item.content}}</span>
                     </div>
-                    <div class="activity-header">
-                      <span>{{ '发布于 ' + item.release_time }}</span>
-                    </div>
-                    <div class="activity-footer">
-                      <a class="group" href="https://www.buaa.edu.cn/" style="display: block; margin-top: 10px; font-weight: bold; text-align: center; color: #1890ff;">活动详情</a>
+                    <div class="card-header">
+                      <span>{{ '发布于 ' + item.time }}</span>
                     </div>
                   </div>
                 </a-card>
               </a-card-grid>
             </div>
           </a-card>
-          <a-card class="activity-list" :loading="loading" style="margin-bottom: 24px;" :bordered="false" title="事务提醒" :body-style="{padding: 0}">
+
+          <a-card class="activity-list" :loading="loading" style="margin-bottom: 24px;" :bordered="false" title="活动提醒" :body-style="{padding: 0}">
             <div>
               <a-card-grid :key="i" v-for="(item, i) in activities">
-                <a-card :bordered="false" :body-style="{padding: 0}">
-                  <a-card-meta>
-                    <div slot="title" class="card-title">
-                      <span>{{ item.title }}</span>
+                <a-card :bordered="false" :body-style="{padding: 0}" style="margin-bottom: 20px; border-radius: 8px;">
+                  <div class="card-item">
+                    <div class="card-header">
+                      <span style="font-weight: bold;">{{ item.content}}</span>
                     </div>
-                  </a-card-meta>
-                  <div class="activity-item">
-                    <a class="group" href="https://www.buaa.edu.cn/">活动详情</a>
-                    <span class="datetime">{{ item.time }}</span>
+                    <div class="card-header">
+                      <span>{{ '发布于 ' + item.time }}</span>
+                    </div>
+                    <div class="card-footer">
+                      <a class="group"
+                         @click="goToActivityDetail(item.id)"
+                         style="display: block; margin-top: 10px; font-weight: bold; text-align: center; color: #1890ff;"
+                      >
+                        活动详情
+                      </a>
+                    </div>
+                  </div>
+                </a-card>
+              </a-card-grid>
+            </div>
+          </a-card>
+
+          <a-card class="notice-list" :loading="loading" style="margin-bottom: 24px;" :bordered="false" title="审核结果" :body-style="{padding: 0}">
+            <div>
+              <a-card-grid :key="i" v-for="(item, i) in notices">
+                <a-card :bordered="false" :body-style="{padding: 0}">
+                  <div class="card-item">
+                    <div class="card-header">
+                      <span style="font-weight: bold;">{{ item.content}}</span>
+                    </div>
+                    <div class="card-header">
+                      <span>{{ '发布于 ' + item.time }}</span>
+                    </div>
                   </div>
                 </a-card>
               </a-card-grid>
@@ -68,6 +74,13 @@
 </template>
 
 <script>
+import axios from "axios"; // Ensure Axios is imported
+
+const instance = axios.create({
+  baseURL: 'http://localhost:8080',  // Check and adapt to your backend address
+  withCredentials: true,
+});
+
 import PageLayout from '@/layouts/PageLayout'
 import {mapState} from 'vuex'
 
@@ -77,27 +90,87 @@ export default {
   i18n: require('./i18n'),
   data () {
     return {
+      announcements: [
+        {
+          id: 2,
+          title: '狂欢节',
+          content: '不醉不归',
+          time: '2024-11-14 14:20:23'
+        }
+      ],
       activities: [
         {
           id: 1,
-          time:'',
-          club_name: '翰墨书画社',
-          title: '编程马拉松',
-          content: '不理解是干啥的',
-          start_time: '2023-05-15 16:00',
-          end_time: '2023-05-15 17:00',
-          release_time: '2024-06-18 13:00',
-          venue: '地点',
-          picture_id: '',
-          is_passed: 1
+          content: '翰墨书画社发布的主题为书法比赛的活动正在报名中，请积极参与报名',
+          time:'2024-11-14 14:20:23',
         }
       ],
-      notices: [],
+      notices: [
+        {
+          id: 3,
+          content: '您于2024-11-13 14:20:23提交的报名翰墨书画社已通过审核',
+          time: '2024-11-14 14:20:23'
+        },
+        {
+          id: 4,
+          content: '翰林书画社于2024-11-13 14:20:23提交的主题为书法比赛的活动申请已通过审核',
+          time: '2024-11-14 14:20:23'
+        }
+      ],
       loading: false,
     }
   },
   computed: {
     ...mapState('account', {currUser: 'user'}),
+  },
+  mounted() {
+    this.fetchAnnouncements();
+    this.fetchActivities();
+    this.fetchNotices();
+  },
+  methods: {
+    goToActivityDetail(id) {
+      this.$router.push({path: '/activitydetail', query: {activityId: id, joined: true}});
+    },
+    fetchAnnouncements() {
+      this.loading = true;
+      instance.get(`/iClub/getAnnouncement`)
+          .then(response => {
+            this.announcements = response.data.data;
+          })
+          .catch(error => {
+            console.error('Error fetching announcements:', error);
+          })
+          .finally(() => {
+            this.loading = false;
+          });
+    },
+    fetchActivities() {
+      this.loading = true;
+      instance.post(`/iClub/getPersonalActivityNotice`, {studentId: this.currUser.id})
+          .then(response => {
+            this.activities = response.data.data;
+          })
+          .catch(error => {
+            console.error('Error fetching activities:', error);
+          })
+          .finally(() => {
+            this.loading = false;
+          });
+    },
+    fetchNotices() {
+      this.loading = true;
+      instance.post(`/iClub/getPersonalNotice`, {studentId: this.currUser.id})
+          .then(response => {
+            this.notices = response.data.data;
+          })
+          .catch(error => {
+            console.error('Error fetching notices:', error);
+          })
+          .finally(() => {
+            this.loading = false;
+          });
+    },
   }
 }
 </script>
@@ -112,20 +185,20 @@ export default {
   margin: 10px 0;
 }
 
-.activity-item {
+.card-item {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding: 16px;
 }
 
-.activity-header {
+.card-header {
   margin-bottom: 10px;  /* 活动标题和发布时间之间的间距 */
   font-size: 14px;
   color: #666;
 }
 
-.activity-footer {
+.card-footer {
   margin-top: 10px;
   text-align: center;
 }

@@ -53,7 +53,7 @@ export default {
         id: Date.now().toString(),
         time: new Date().toLocaleString(),
         title: this.title,
-        description: this.description,
+        content: this.description,
       };
       try {
         const response = await instance.post('/iClub/postAnnouncement', payload); // Adjust the path as per your requirements
