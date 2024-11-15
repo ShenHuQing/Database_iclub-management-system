@@ -88,7 +88,7 @@ export default {
       return this.participants.some(participant => participant.id === this.user.id);
     },
     showButton() {
-      return this.joined && (this.isBeforeStart || (this.isOngoing && this.isSignedUp));
+      return this.roles !== 'admin' && this.joined && (this.isBeforeStart || (this.isOngoing && this.isSignedUp));
     }
   },
   data() {

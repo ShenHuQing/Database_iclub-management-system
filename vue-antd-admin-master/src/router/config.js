@@ -27,6 +27,17 @@ const options = {
       redirect: '/login',
       children: [
         {
+          path: '/profile',
+          name: '个人中心',
+          component: () => import('../pages/profile/Profile'),
+          meta: {
+            invisible: true,
+            page: {
+              cacheAble: true
+            }
+          }
+        },
+        {
           path: 'dashboard',
           name: 'Dashboard',
           meta: {
@@ -44,11 +55,11 @@ const options = {
               },
               component: () => import('@/pages/dashboard/workplace'),
             },
-            {
-              path: 'analysis',
-              name: '分析页',
-              component: () => import('@/pages/dashboard/analysis'),
-            }
+            // {
+            //   path: 'analysis',
+            //   name: '分析页',
+            //   component: () => import('@/pages/dashboard/analysis'),
+            // }
           ]
         },
         {
@@ -138,55 +149,55 @@ const options = {
               name: '审批列表',
               component: () => import('@/pages/approval/Approval'),
             },
-            {
-              path: 'query',
-              name: '查询表格',
-              meta: {
-                authority: 'queryForm',
-              },
-              component: () => import('@/pages/list/QueryList'),
-            },
-            {
-              path: 'query/detail/:id',
-              name: '查询详情',
-              meta: {
-                highlight: '/list/query',
-                invisible: true
-              },
-              component: () => import('@/pages/Demo')
-            },
-            {
-              path: 'primary',
-              name: '标准列表',
-              component: () => import('@/pages/list/StandardList'),
-            },
-            {
-              path: 'card',
-              name: '卡片列表',
-              component: () => import('@/pages/list/CardList'),
-            },
-            {
-              path: 'search',
-              name: '搜索列表',
-              component: () => import('@/pages/list/search/SearchLayout'),
-              children: [
-                {
-                  path: 'article',
-                  name: '文章',
-                  component: () => import('@/pages/list/search/ArticleList'),
-                },
-                {
-                  path: 'application',
-                  name: '应用',
-                  component: () => import('@/pages/list/search/ApplicationList'),
-                },
-                {
-                  path: 'project',
-                  name: '项目',
-                  component: () => import('@/pages/list/search/ProjectList'),
-                }
-              ]
-            }
+            // {
+            //   path: 'query',
+            //   name: '查询表格',
+            //   meta: {
+            //     authority: 'queryForm',
+            //   },
+            //   component: () => import('@/pages/list/QueryList'),
+            // },
+            // {
+            //   path: 'query/detail/:id',
+            //   name: '查询详情',
+            //   meta: {
+            //     highlight: '/list/query',
+            //     invisible: true
+            //   },
+            //   component: () => import('@/pages/Demo')
+            // },
+            // {
+            //   path: 'primary',
+            //   name: '标准列表',
+            //   component: () => import('@/pages/list/StandardList'),
+            // },
+            // {
+            //   path: 'card',
+            //   name: '卡片列表',
+            //   component: () => import('@/pages/list/CardList'),
+            // },
+            // {
+            //   path: 'search',
+            //   name: '搜索列表',
+            //   component: () => import('@/pages/list/search/SearchLayout'),
+            //   children: [
+            //     {
+            //       path: 'article',
+            //       name: '文章',
+            //       component: () => import('@/pages/list/search/ArticleList'),
+            //     },
+            //     {
+            //       path: 'application',
+            //       name: '应用',
+            //       component: () => import('@/pages/list/search/ApplicationList'),
+            //     },
+            //     {
+            //       path: 'project',
+            //       name: '项目',
+            //       component: () => import('@/pages/list/search/ProjectList'),
+            //     }
+            //   ]
+            // }
           ]
         },
         // {
@@ -269,17 +280,6 @@ const options = {
         //     }
         //   },
         //   component: () => import('@/pages/form/basic')
-        // },
-        // {
-        //   path: '/profile',
-        //   name: '个人中心',
-        //   component: () => import('../pages/profile/Profile'),
-        //   meta: {
-        //     invisible: true,
-        //     page: {
-        //       cacheAble: true
-        //     }
-        //   }
         // },
         // {
         //   name: '带参菜单',

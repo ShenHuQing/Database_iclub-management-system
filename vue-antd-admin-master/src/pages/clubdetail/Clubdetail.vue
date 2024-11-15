@@ -6,7 +6,7 @@
       <div class="info">
         <h1>{{ basicInfo.name }}</h1>
         <p>{{ basicInfo.description }}</p>
-        <div class="actions">
+        <div v-if="roles !== 'admin'" class="actions">
           <button @click="joinSociety">{{ joined ? '已加入' : '加入社团' }}</button>
           <button @click="followSociety">{{ followed ? '已关注' : '关注社团' }}</button>
           <button v-if="isStaff" @click="applyActivity">{{ '申请活动' }}</button>
@@ -21,7 +21,7 @@
       <button :class="{ active: activeTab === 'comments' }" @click="activeTab = 'comments'">
         评论区
       </button>
-      <button v-if="this.isStaff"
+      <button v-if="isStaff || roles === 'admin'"
               :class="{ active: activeTab === 'information' }" @click="activeTab = 'information'">
         学生信息
       </button>
@@ -86,7 +86,7 @@
                           @click="likeComment(comment)" />
                   <span style="margin-left: -12px;line-height: 1.3;">{{ comment.likes }}</span>
                   <a-icon type="message" style="margin-left: 25px;margin-right: 8px; line-height: 1.5;" @click="replyToComment(comment)" />
-                  <a-icon v-if="comment.authorId === user.id" type="delete" style="margin-left: 25px;margin-right: 8px; line-height: 1.5;" @click="deleteComment(comment)" />
+                  <a-icon v-if="comment.authorId === user.id || roles === 'admin'" type="delete" style="margin-left: 25px;margin-right: 8px; line-height: 1.5;" @click="deleteComment(comment)" />
                 </div>
               </div>
 
@@ -116,7 +116,7 @@
                                 @click="likeReply(reply)" />
                         <span style="margin-left: -12px;line-height: 1.3;">{{ reply.likes }}</span>
                         <a-icon type="message" style="margin-left: 25px;margin-right: 8px; line-height: 1.5;" @click="replyToReply(comment, reply)" />
-                        <a-icon v-if="reply.authorId === user.id" type="delete" style="margin-left: 25px;margin-right: 8px; line-height: 1.5;" @click="deleteReply(comment, reply)" />
+                        <a-icon v-if="reply.authorId === user.id || roles === 'admin'" type="delete" style="margin-left: 25px;margin-right: 8px; line-height: 1.5;" @click="deleteReply(comment, reply)" />
                       </span>
                     </a-list-item>
                   </template>
@@ -126,7 +126,7 @@
             </a-list-item>
           </a-list>
 
-          <div class="comment-box">
+          <div v-if="roles !== 'admin'" class="comment-box">
             <a-input
                 v-model="newComment"
                 :placeholder="commentPlaceholder"
@@ -281,6 +281,9 @@ export default {
         const clubDetailResponse = await instance.get(`/iClub/getClubDetails/${clubId}`);
         this.basicInfo = clubDetailResponse.data.data;
 
+        const activitiesResponse = await instance.post(`/iClub/getActivities`, {clubName: this.basicInfo.name});
+        this.activities = activitiesResponse.data.data;
+
         const commentsResponse = await instance.post(`/iClub/getComments`, {studentId: this.user.id, clubId: this.basicInfo.id});
         this.comments = commentsResponse.data.data;
 
@@ -302,9 +305,6 @@ export default {
             roles: member.isStaff === 0 ? '成员' : '负责人'
           };
         });
-
-        const activitiesResponse = await instance.post(`/iClub/getActivities`, {clubName: this.basicInfo.name});
-        this.activities = activitiesResponse.data.data;
       } catch (error) {
         console.error('获取社团详情信息时出错:', error);
       } finally {
@@ -315,7 +315,7 @@ export default {
       this.$router.push({path: '/form/apply', query: {club_name: this.basicInfo.name}});
     },
     goToActivityDetail(id) {
-      if (this.joined || this.followed) {
+      if (this.joined || this.followed || this.roles === 'admin') {
         this.$router.push({path: '/activitydetail', query: {activityId: id, joined: this.joined}});
       } else {
         this.$message.error('请先加入或关注该社团以查看活动详情', 3);
@@ -330,6 +330,7 @@ export default {
       comment.showReplies = !comment.showReplies;
     },
     async likeComment(comment) {
+      if (this.roles === 'admin') return;
       const action = comment.likedByCurrentUser ? 'unlike' : 'like';
       await instance.post('/iClub/changeCommentLike',
           {clubId: this.basicInfo.id,
@@ -357,6 +358,7 @@ export default {
           })
     },
     async likeReply(reply) {
+      if (this.roles === 'admin') return;
       const action = reply.likedByCurrentUser ? 'unlike' : 'like';
       await instance.post('/iClub/changeReplyLike',
           {clubId: this.basicInfo.id,
