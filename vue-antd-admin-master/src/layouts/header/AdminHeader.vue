@@ -19,6 +19,7 @@
 <!--          </a-tooltip>-->
 <!--          <header-notice class="header-item"/>-->
           <header-avatar class="header-item"/>
+          <span style="font-weight: bold;">积分：{{score}}</span>
 <!--          <a-dropdown class="lang header-item">-->
 <!--            <div>-->
 <!--              <a-icon type="global"/> {{langAlias}}-->
@@ -50,6 +51,7 @@ export default {
         {key: 'HK', name: '繁體中文', alias: '繁體'},
         {key: 'US', name: 'English', alias: 'English'}
       ],
+      score: 0,
       searchActive: false
     }
   },
