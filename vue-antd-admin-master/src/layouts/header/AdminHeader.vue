@@ -94,7 +94,7 @@ export default {
           })
           .catch(error => {
             console.error('获取积分失败，请重试', error);
-            this.$message.error('获取积分失败，请重试', error);
+            this.$message.error('获取积分失败，请重试', 3);
           })
     },
     toggleCollapse () {
