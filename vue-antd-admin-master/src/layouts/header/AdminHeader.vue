@@ -19,7 +19,7 @@
 <!--          </a-tooltip>-->
 <!--          <header-notice class="header-item"/>-->
           <header-avatar class="header-item"/>
-          <span style="font-weight: bold;">积分：{{score}}</span>
+          <span v-if="roles !== 'admin'" style="font-weight: bold;">积分：{{score}}</span>
 <!--          <a-dropdown class="lang header-item">-->
 <!--            <div>-->
 <!--              <a-icon type="global"/> {{langAlias}}-->
@@ -38,7 +38,13 @@
 //import HeaderNotice from './HeaderNotice'
 import HeaderAvatar from './HeaderAvatar'
 import IMenu from '@/components/menu/menu'
-import {mapState, mapMutations} from 'vuex'
+import {mapState, mapMutations, mapGetters} from 'vuex'
+import axios from "axios";
+
+const instance = axios.create({
+  baseURL: 'http://localhost:8080',  // 后端地址
+  withCredentials: true,
+});
 
 export default {
   name: 'AdminHeader',
@@ -55,8 +61,12 @@ export default {
       searchActive: false
     }
   },
+  mounted() {
+    this.fetchScore();
+  },
   computed: {
     ...mapState('setting', ['theme', 'isMobile', 'layout', 'systemName', 'lang', 'pageWidth']),
+    ...mapGetters('account', ['user','roles']),
     headerTheme () {
       if (this.layout == 'side' && this.theme.mode == 'dark' && !this.isMobile) {
         return 'light'
@@ -75,6 +85,18 @@ export default {
     }
   },
   methods: {
+    fetchScore() {
+      instance.post('/iClub/getScore',
+          {studentId: this.user.id,
+          })
+          .then(response => {
+            this.score = response.data.data;
+          })
+          .catch(error => {
+            console.error('获取积分失败，请重试', error);
+            this.$message.error('获取积分失败，请重试', error);
+          })
+    },
     toggleCollapse () {
       this.$emit('toggleCollapse')
     },
