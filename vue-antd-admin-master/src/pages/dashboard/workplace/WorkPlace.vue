@@ -32,7 +32,7 @@
                 <a-card :bordered="false" :body-style="{padding: 0}" style="margin-bottom: 20px; border-radius: 8px;">
                   <div class="card-item">
                     <div class="card-header">
-                      <span style="font-weight: bold;">{{ item.content}}</span>
+                      <span style="font-weight: bold;">{{ item.content }}</span>
                     </div>
                     <div class="card-header">
                       <span>{{ '发布于 ' + item.time }}</span>

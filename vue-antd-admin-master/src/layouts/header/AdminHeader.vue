@@ -62,7 +62,9 @@ export default {
     }
   },
   mounted() {
-    this.fetchScore();
+    if (this.roles !== 'admin') {
+      this.fetchScore();
+    }
   },
   computed: {
     ...mapState('setting', ['theme', 'isMobile', 'layout', 'systemName', 'lang', 'pageWidth']),
