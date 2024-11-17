@@ -26,7 +26,7 @@
             </div>
           </a-card>
 
-          <a-card class="activity-list" :loading="loading" style="margin-bottom: 24px;" :bordered="false" title="活动提醒" :body-style="{padding: 0}">
+          <a-card v-if="roles !== 'admin'" class="activity-list" :loading="loading" style="margin-bottom: 24px;" :bordered="false" title="活动提醒" :body-style="{padding: 0}">
             <div>
               <a-card-grid :key="i" v-for="(item, i) in activities">
                 <a-card :bordered="false" :body-style="{padding: 0}" style="margin-bottom: 20px; border-radius: 8px;">
@@ -51,7 +51,7 @@
             </div>
           </a-card>
 
-          <a-card class="notice-list" :loading="loading" style="margin-bottom: 24px;" :bordered="false" title="审核结果" :body-style="{padding: 0}">
+          <a-card v-if="roles !== 'admin'" class="notice-list" :loading="loading" style="margin-bottom: 24px;" :bordered="false" title="审核结果" :body-style="{padding: 0}">
             <div>
               <a-card-grid :key="i" v-for="(item, i) in notices">
                 <a-card :bordered="false" :body-style="{padding: 0}">
@@ -121,7 +121,7 @@ export default {
     }
   },
   computed: {
-    ...mapState('account', {currUser: 'user'}),
+    ...mapState('account', {currUser: 'user', roles: 'roles'}),
   },
   mounted() {
     this.fetchAnnouncements();
@@ -150,6 +150,7 @@ export default {
       instance.post(`/iClub/getPersonalActivityNotice`, {studentId: this.currUser.id})
           .then(response => {
             this.activities = response.data.data;
+            console.log(this.activities)
           })
           .catch(error => {
             console.error('Error fetching activities:', error);

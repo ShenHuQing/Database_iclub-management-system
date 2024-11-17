@@ -77,6 +77,21 @@ const options = {
               path: 'clubs',
               name: '社团页',
               component: () => import('@/pages/clubs'),
+            },
+            {
+              path: 'myjoinclubs',
+              name: '已加入',
+              component: () => import('@/pages/myjoinclubs'),
+            },
+            {
+              path: 'myfollowclubs',
+              name: '已关注',
+              component: () => import('@/pages/myfollowclubs'),
+            },
+            {
+              path: 'myhandleclubs',
+              name: '已管理',
+              component: () => import('@/pages/myhandleclubs'),
             }
           ]
         },
