@@ -90,7 +90,7 @@ export default {
           clubName: '凌峰社',
           description: '我很棒',
           create_time: '2024-11-4',
-          isPassed: 0
+          is_passed: 0
         }
       ],
       activity: [

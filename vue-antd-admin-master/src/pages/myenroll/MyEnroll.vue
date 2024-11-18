@@ -13,10 +13,10 @@
             <a slot="title">AliPay</a>
           </a-list-item-meta>
           <div slot="actions">
-            <a v-if="item.isPassed === 0" style="margin-right: 8px; color: #808080">待审批</a>
-            <a v-if="item.isPassed === 1" style="color: #B22222;">未通过</a>
-            <a v-if="item.isPassed === 2">已通过</a>
-            <a v-if="item.isPassed === 0" @click="deleteEnroll(item.id)">取消报名</a>
+            <a v-if="item.is_passed === 0" style="margin-right: 8px; color: #808080">待审批</a>
+            <a v-if="item.is_passed === 1" style="color: #B22222;">未通过</a>
+            <a v-if="item.is_passed === 2">已通过</a>
+            <a v-if="item.is_passed === 0" @click="deleteEnroll(item.id)">取消报名</a>
           </div>
           <div class="list-content">
             <div class="list-content-item">
@@ -60,7 +60,7 @@ export default {
           clubName: '凌峰社',
           description: '我很棒',
           create_time: '2024-11-4',
-          isPassed: 0
+          is_passed: 0
         }
       ],
       loading: false
@@ -74,6 +74,7 @@ export default {
       this.loading = true;
       try {
         const response = await instance.post(`/iClub/getPersonalEnrolls`, {studentId: this.user.id});
+        console.log(response)
         this.enroll = response.data.data;
       } catch (error) {
         console.error('获取报名记录时出错:', error);
