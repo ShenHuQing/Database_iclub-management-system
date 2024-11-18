@@ -74,6 +74,7 @@ export default {
       this.loading = true;
       try {
         const response = await instance.post(`/iClub/getPersonalEnrolls`, {studentId: this.user.id});
+        console.log(response)
         this.enroll = response.data.data;
       } catch (error) {
         console.error('获取报名记录时出错:', error);

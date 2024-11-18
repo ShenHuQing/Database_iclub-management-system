@@ -1,67 +1,69 @@
 <template>
   <div class="student-info">
-    <div v-if="isAdmin === 1">
+    <div v-if="isAdmin === 1" class="card admin-card">
       <h2>管理员信息</h2>
-      <img :src="admin.pictureId" alt="头像" style="width: 100px; height: 100px; border-radius: 50%;" />
-      <p>姓名: {{ admin.name }}</p>
-      <p>邮箱: {{ admin.email}}</p>
-      <button @click="toggleEditMode">{{ editing ? '关闭' : '修改' }}</button>
-      <div v-if="editing">
+      <div class="profile">
+        <img :src="admin.pictureId" alt="头像" />
+        <div class="profile-info">
+          <p><strong>姓名:</strong> {{ admin.name }}</p>
+          <p><strong>邮箱:</strong> {{ admin.email }}</p>
+        </div>
+      </div>
+      <button class="edit-btn" @click="toggleEditMode">
+        {{ editing ? '关闭' : '修改' }}
+      </button>
+      <div v-if="editing" class="edit-section">
         <label for="name">姓名:</label>
         <input v-model="admin.name" id="name" />
-        <br>
         <label for="email">邮箱:</label>
         <input v-model="admin.email" id="email" type="email" />
-        <br>
         <label for="pictureID">头像:</label>
         <input type="file" @change="onFileChange" id="pictureID" />
-        <br>
-        <button @click="saveChanges">保存更改</button>
+        <button class="save-btn" @click="saveChanges">保存更改</button>
       </div>
     </div>
 
-    <div v-if="isAdmin === 0">
+    <div v-if="isAdmin === 0" class="card student-card">
       <h2>学生信息</h2>
-      <img :src="student.pictureId" alt="头像" style="width: 100px; height: 100px; border-radius: 50%;" />
-      <p>姓名: {{ student.name }}</p>
-      <p>学号: {{ student.id}}</p>
-      <p>性别: {{ student.gender}}</p>
-      <p>年级: {{ student.grade }}</p>
-      <p>专业: {{ student.major }}</p>
-      <p>邮箱: {{ student.email }}</p>
-      <p>兴趣爱好: {{ student.hobby }}</p>
-      <p>个性签名: {{ student.signature}}</p>
-      <button @click="toggleEditMode">{{ editing ? '关闭' : '修改' }}</button>
-      <div v-if="editing">
+      <div class="profile">
+        <img :src="student.pictureId" alt="头像" />
+        <div class="profile-info">
+          <p><strong>姓名:</strong> {{ student.name }}</p>
+          <p><strong>学号:</strong> {{ student.id }}</p>
+          <p><strong>性别:</strong> {{ student.gender }}</p>
+          <p><strong>年级:</strong> {{ student.grade }}</p>
+          <p><strong>专业:</strong> {{ student.major }}</p>
+          <p><strong>邮箱:</strong> {{ student.email }}</p>
+          <p><strong>兴趣爱好:</strong> {{ student.hobby }}</p>
+          <p><strong>个性签名:</strong> {{ student.signature }}</p>
+        </div>
+      </div>
+      <button class="edit-btn" @click="toggleEditMode">
+        {{ editing ? '关闭' : '修改' }}
+      </button>
+      <div v-if="editing" class="edit-section">
         <label for="name">姓名:</label>
         <input v-model="student.name" id="name" />
-        <br>
-        <label for="name">性别:</label>
+        <label for="gender">性别:</label>
         <input v-model="student.gender" id="gender" />
-        <br>
         <label for="grade">年级:</label>
         <input v-model.number="student.grade" id="grade" type="number" />
-        <br>
         <label for="major">专业:</label>
         <input v-model="student.major" id="major" />
-        <br>
         <label for="email">邮箱:</label>
         <input v-model="student.email" id="email" type="email" />
-        <br>
-        <label for="email">兴趣爱好:</label>
-        <input v-model="student.hobby" id="hobby"/>
-        <br>
-        <label for="email">个性签名:</label>
-        <input v-model="student.signature" id="signature"/>
-        <br>
+        <label for="hobby">兴趣爱好:</label>
+        <input v-model="student.hobby" id="hobby" />
+        <label for="signature">个性签名:</label>
+        <input v-model="student.signature" id="signature" />
         <label for="pictureID">头像:</label>
         <input type="file" @change="onFileChange" id="pictureID" />
-        <br>
-        <button @click="saveChanges">保存更改</button>
+        <button class="save-btn" @click="saveChanges">保存更改</button>
       </div>
     </div>
   </div>
 </template>
+
 
 <script>
 import axios from 'axios';
@@ -180,107 +182,99 @@ export default {
 <style scoped>
 /* 页面整体样式 */
 body {
-  background-color: #f7f7f7;
+  background-color: #f5f8fa;
+  font-family: 'Arial', sans-serif;
   color: #333;
-  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
-/* 学生和管理员信息的容器 */
 .student-info {
-  max-width: 1200px;
+  max-width: 800px;
   margin: 30px auto;
   padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 12px;
-  background: linear-gradient(to right, #fff, #f7f7f7);
+}
+
+.card {
+  background-color: #ffffff;
+  border-radius: 16px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  font-size: 1.4em;
+  padding: 20px;
+  margin-bottom: 20px;
 }
 
-/* 标题样式 */
 h2 {
-  font-size: 2em;
-  font-weight: 600;
-  margin-bottom: 15px;
+  font-size: 1.8em;
   color: #007BFF;
+  text-align: center;
+  margin-bottom: 20px;
 }
 
-/* 图片样式 */
-img {
-  width: 100px;
-  height: 100px;
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.profile img {
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  border: 2px solid #007BFF;
+  border: 4px solid #007BFF;
+  object-fit: cover;
 }
 
-/* 段落样式 */
-p {
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 5px;
-  margin-bottom: 10px;
-  font-size: 1.2em;
+.profile-info {
+  flex: 1;
 }
 
-/* 标签和输入框样式 */
-label {
-  display: block;
-  margin-bottom: 5px;
+.profile-info p {
+  margin: 5px 0;
   font-size: 1.1em;
 }
 
-input {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 12px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  box-shadow: inset 0px 2px 5px rgba(0, 0, 0, 0.1);
-  font-size: 1.1em;
-}
-
-input:focus {
-  outline: none;
-  border-color: #007BFF;
-}
-
-/* 按钮样式 */
 button {
-  padding: 10px 20px;
-  background-color: #007BFF;
-  color: white;
-  border-radius: 8px;
+  display: inline-block;
+  background: linear-gradient(45deg, #007BFF, #0056b3);
+  color: #fff;
   border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-size: 1em;
   cursor: pointer;
-  font-size: 1.1em;
-  transition: background-color 0.3s ease, transform 0.2s;
-}
-
-button:hover {
-  background-color: #0056b3;
-  transform: scale(1.05);
-}
-
-/* 动画和过渡效果 */
-.student-info div {
   transition: all 0.3s ease;
 }
 
-/* 响应式设计 */
-@media (max-width: 768px) {
-  .student-info {
-    padding: 10px;
-    font-size: 1.1em;
-  }
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
 
-  img {
-    width: 80px;
-    height: 80px;
-  }
+.edit-btn {
+  width: 100%;
+  margin-top: 10px;
+}
 
-  button {
-    padding: 8px 16px;
-    font-size: 1em;
-  }
+.save-btn {
+  margin-top: 10px;
+  width: 100%;
+}
+
+input {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  margin: 10px 0;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+input:focus {
+  border-color: #007BFF;
+  outline: none;
+  box-shadow: 0 0 6px rgba(0, 123, 255, 0.5);
 }
 </style>
