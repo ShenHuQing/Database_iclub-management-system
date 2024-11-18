@@ -98,17 +98,13 @@ export default {
     }
   },
   computed: {
+    ...mapGetters('account', ['user']),
+    isStudent() {
+      return this.user.role === 'student'; // 假设角色为 'student'
+    },
     systemName() {
-      return this.$store.state.setting.systemName
-    },
-    computed: {
-      ...mapGetters('account', ['user']),
-      isStudent() {
-        return this.user.role === 'student'; // 假设角色为 'student'
-      },
-      // 其他 computed 属性
-    },
-
+      return this.$store.state.setting.systemName;
+    }
   },
   methods: {
     ...mapMutations('account', ['setUser', 'setPermissions', 'setRoles']),
