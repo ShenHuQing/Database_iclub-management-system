@@ -26,7 +26,7 @@
     <div v-if="isAdmin === 0" class="card student-card">
       <h2>学生信息</h2>
       <div class="profile">
-        <img :src="admin.pictureId || ''" alt="头像" />
+        <img :src="student.pictureId || ''" alt="头像" />
         <div class="profile-info">
           <p><strong>姓名:</strong> {{ student.name }}</p>
           <p><strong>学号:</strong> {{ student.id }}</p>
@@ -147,12 +147,12 @@ export default {
         const reader = new FileReader();
         reader.onload = e => {
           if (this.isAdmin === 1) {
-            this.admin.pictureId = e.target.result;
+            this.admin.pictureId = e.target.result; // 这里更新 admin 的图片
           } else {
-            this.student.pictureId = e.target.result;
+            this.student.pictureId = e.target.result; // 这里更新 student 的图片
           }
         };
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(file); // 读取文件为 Data URL
       }
     },
     saveChanges() {
