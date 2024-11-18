@@ -43,12 +43,18 @@
                     <div class="card-header">
                       <span>{{ '发布于 ' + item.time }}</span>
                     </div>
-                    <div class="card-footer">
+                    <div class="card-footer" style="display: flex; justify-content: center; align-items: center; gap: 20px;">
                       <a class="group"
-                         @click="goToActivityDetail(item.id, item.activityId)"
-                         style="display: block; margin-top: 10px; font-weight: bold; text-align: center;"
+                         @click="goToActivityDetail(item.activityId)"
+                         style="font-weight: bold; text-align: center;"
                       >
                         活动详情
+                      </a>
+                      <a class="group"
+                         @click="markAsRead(item.id, 'activities')"
+                         style="font-weight: bold; text-align: center;"
+                      >
+                        标记已读
                       </a>
                     </div>
                   </div>
@@ -169,8 +175,7 @@ export default {
             });
       }
     },
-    goToActivityDetail(id, activityId) {
-      this.markAsRead(id, 'activities');
+    goToActivityDetail(activityId) {
       this.$router.push({path: '/activitydetail', query: {activityId: activityId, joined: true}});
     },
     fetchAnnouncements() {
