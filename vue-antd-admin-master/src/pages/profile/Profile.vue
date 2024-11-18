@@ -3,7 +3,7 @@
     <div v-if="isAdmin === 1" class="card admin-card">
       <h2>管理员信息</h2>
       <div class="profile">
-        <img :src="admin.pictureId" alt="头像" />
+        <img :src="admin.pictureId || ''" alt="头像" />
         <div class="profile-info">
           <p><strong>姓名:</strong> {{ admin.name }}</p>
           <p><strong>邮箱:</strong> {{ admin.email }}</p>
@@ -26,7 +26,7 @@
     <div v-if="isAdmin === 0" class="card student-card">
       <h2>学生信息</h2>
       <div class="profile">
-        <img :src="student.pictureId" alt="头像" />
+        <img :src="admin.pictureId || ''" alt="头像" />
         <div class="profile-info">
           <p><strong>姓名:</strong> {{ student.name }}</p>
           <p><strong>学号:</strong> {{ student.id }}</p>
@@ -223,6 +223,27 @@ h2 {
   border-radius: 50%;
   border: 4px solid #007BFF;
   object-fit: cover;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2em;
+  color: #aaa;
+  text-align: center;
+}
+
+/* 添加：当图片不存在时显示默认的“头像”文字 */
+.profile img:empty::before {
+  content: "头像";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  font-size: 1.2em;
+  color: #aaa;
+  background-color: #f0f0f0;
+  border-radius: 50%;
 }
 
 .profile-info {
