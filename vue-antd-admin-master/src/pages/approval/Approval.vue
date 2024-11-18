@@ -14,7 +14,7 @@
           </a-list-item-meta>
           <div slot="actions">
             <a @click="approve_staff(item.id)" style="margin-right: 8px;">批准</a>
-            <a @click="reject_staff(item.id)">拒绝</a>
+            <a @click="reject_staff(item.id)" style="color: #B22222;">拒绝</a>
           </div>
           <div class="list-content">
             <div class="list-content-item">
@@ -39,7 +39,7 @@
           </a-list-item-meta>
           <div slot="actions">
             <a @click="approve_admin(item.id)" style="margin-right: 8px;">批准</a>
-            <a @click="reject_admin(item.id)">拒绝</a>
+            <a @click="reject_admin(item.id)" style="color: #B22222;">拒绝</a>
           </div>
           <div class="list-content">
             <div class="list-content-item">
@@ -89,7 +89,8 @@ export default {
           clubId: '1',
           clubName: '凌峰社',
           description: '我很棒',
-          create_time: '2024-11-4'
+          create_time: '2024-11-4',
+          isPassed: 0
         }
       ],
       activity: [

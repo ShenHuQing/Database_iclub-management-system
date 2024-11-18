@@ -39,12 +39,11 @@
       </div>
     </div>
 
-    <!-- 打卡接龙标题 -->
     <div class="check-in-title">
       接龙框
     </div>
-    <!--打卡接龙-->
-    <div>
+
+    <div v-if="participants.length !== 0">
       <div class="attendee-list">
         <div
             v-for="(participant, index) in participants"

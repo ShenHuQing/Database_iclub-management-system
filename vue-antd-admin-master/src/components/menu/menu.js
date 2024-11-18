@@ -202,13 +202,16 @@ export default {
           return null; // 如果不是 staff，则不渲染该菜单项
         }
         if (menu.path === 'announcement' && !(this.roles === 'admin')) {
-          return null; // 如果不是 admin，则不渲染该菜单项
+          return null; // 如果是 admin，则不渲染该菜单项
         }
         if ((menu.path === 'myjoinclubs' || menu.path === 'myfollowclubs') && this.roles === 'admin') {
-          return null; // 如果不是 admin，则不渲染该菜单项
+          return null;
         }
         if (menu.path === 'myhandleclubs' && this.roles !== 'staff') {
-          return null; // 如果不是 admin，则不渲染该菜单项
+          return null;
+        }
+        if (menu.path === 'myenroll' && this.roles === 'admin') {
+          return null; // 如果是 admin，则不渲染该菜单项
         }
         let renderChildren = false
         const children = menu.children

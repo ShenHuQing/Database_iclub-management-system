@@ -47,7 +47,7 @@ const options = {
           children: [
             {
               path: 'workplace',
-              name: '工作台',
+              name: '消息页',
               meta: {
                 page: {
                   closable: false
@@ -163,6 +163,11 @@ const options = {
               path: 'approval',
               name: '审批列表',
               component: () => import('@/pages/approval/Approval'),
+            },
+            {
+              path: 'myenroll',
+              name: '我的报名',
+              component: () => import('@/pages/myenroll/MyEnroll'),
             },
             // {
             //   path: 'query',
