@@ -133,7 +133,7 @@ export default {
             if (res.code === 0) {  // 假设返回 code 为 0 代表成功
               this.$message.success('注册成功！请登录。', 3);
               // 注册成功后切换到登录 Tab
-              this.activeTab = 'login';
+              this.activeTadatb = 'login';
               this.form.resetFields();  // 重置表单
             } else {
               this.error = '注册失败，该用户已存在。';

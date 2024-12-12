@@ -110,8 +110,11 @@ export default {
   vertical-align: middle;
   font-size: 14px;
   margin-left: 40px;
+  max-width: 350px;
+  text-align: center; /* 使父元素内的文本水平居中 */
   span{
     line-height: 20px;
+    font-weight: bold;
   }
   p{
     margin: 4px 0 0;

@@ -169,6 +169,11 @@ const options = {
               name: '我的报名',
               component: () => import('@/pages/myenroll/MyEnroll'),
             },
+            {
+              path: 'myapply',
+              name: '我的申请',
+              component: () => import('@/pages/myapply/MyApply'),
+            },
             // {
             //   path: 'query',
             //   name: '查询表格',
