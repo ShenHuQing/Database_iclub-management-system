@@ -213,6 +213,9 @@ export default {
         if (menu.path === 'myenroll' && this.roles === 'admin') {
           return null; // 如果是 admin，则不渲染该菜单项
         }
+        if (menu.path === 'form' && this.roles === 'student') {
+          return null; // 如果是 student2237137，则不渲染该菜单项
+        }
         let renderChildren = false
         const children = menu.children
         if (children != undefined) {
