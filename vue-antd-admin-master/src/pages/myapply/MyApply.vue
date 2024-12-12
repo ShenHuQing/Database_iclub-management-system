@@ -18,12 +18,12 @@
             <a v-if="item.is_passed === 2">已通过</a>
             <a v-if="item.is_passed === 0" @click="deleteApply(item.id)">取消申请</a>
           </div>
-          <div class="list-content">
-            <div class="list-content-item">
+          <div style="text-align: center;" class="list-content">
+            <div style="max-width: 300px;" class="list-content-item">
               <span>活动内容</span>
               <p>{{item.content}}</p>
             </div>
-            <div class="list-content-item">
+            <div style="max-width: 200px;" class="list-content-item">
               <span>活动时间</span>
               <p>{{item.start_time}} - {{item.end_time}}</p>
             </div>
@@ -123,8 +123,7 @@ export default {
   vertical-align: middle;
   font-size: 14px;
   margin-left: 40px;
-  max-width: 350px;
-  text-align: center; /* 使父元素内的文本水平居中 */
+  //text-align: center; /* 使父元素内的文本水平居中 */
   span{
     line-height: 20px;
     font-weight: bold;
