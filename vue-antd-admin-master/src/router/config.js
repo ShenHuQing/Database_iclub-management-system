@@ -47,7 +47,7 @@ const options = {
           children: [
             {
               path: 'workplace',
-              name: '消息页',
+              name: '主页',
               meta: {
                 page: {
                   closable: false
@@ -64,7 +64,7 @@ const options = {
         },
         {
           path: 'information',
-          name: '信息页',
+          name: '社团',
           meta: {
             icon: 'appstore-o',
             page: {
@@ -130,7 +130,7 @@ const options = {
         },
         {
           path: 'form',
-          name: '表单页',
+          name: '表单',
           meta: {
             icon: 'form',
             page: {
@@ -153,7 +153,7 @@ const options = {
         },
         {
           path: 'list',
-          name: '列表页',
+          name: '列表',
           meta: {
             icon: 'table'
           },
